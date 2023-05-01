@@ -68,7 +68,7 @@ class ProductManager{
     getProductById(id) {
         const product = this.products.find(prod => prod.id === id)
         if (!product) {
-            console.log('Producto no encontrado')
+            console.log('Producto buscado por ID no encontrado')
             return null
         }
         return product
@@ -77,7 +77,7 @@ class ProductManager{
     updateProduct(id, updatedFields) {
         const productIndex = this.products.findIndex((prod) => prod.id === id)
         if (productIndex === -1) {
-            console.log('Producto no encontrado')
+            console.log('Producto para actualizar no encontrado')
             return false
         }
         const product = { ...this.products[productIndex], ...updatedFields }
@@ -89,7 +89,7 @@ class ProductManager{
     deleteProduct(id) {
         const productIndex = this.products.findIndex((prod) => prod.id === id)
         if (productIndex === -1) {
-            console.log('Producto no encontrado')
+            console.log('Producto para eliminar no encontrado')
             return false;
         }
         this.products.splice(productIndex, 1)

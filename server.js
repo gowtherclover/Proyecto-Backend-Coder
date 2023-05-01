@@ -1,7 +1,36 @@
+const fs = require ("fs")
 class ProductManager{
-    constructor(){
-        this.products = []
+    constructor(path) {
+        this.path = path
+        const products = this.readProductsFromFile();
+        this.products = products
     }
+
+    readProductsFromFile() {
+        try {
+            const data = fs.readFileSync(this.path, 'utf-8')
+            if (data) {
+                return JSON.parse(data);
+            }
+            else{
+                return []
+            }
+            
+        } catch (error) {
+            console.error(error)
+            return [];
+        }
+    }
+
+    saveProductsToFile() {
+        try {
+            const data = JSON.stringify(this.products)
+            fs.writeFileSync(this.path, data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
 
     getProducts(){
         return this.products
@@ -18,21 +47,21 @@ class ProductManager{
         return idMax
     }
 
-    addProducts(title,description,price,thumbnail,code,stock){
-        if (!title || !description || !price || !thumbnail || !code || !stock) {
-            console.log('Faltan campos obligatorios')
+    addProduct(product) {
+        if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
+            console.log('Faltan campos obligatorios');
             return false
         }
-        
-        if (this.products.some(prod => prod.code === code)) {
-            console.log('El código del producto ya existe')
+    
+        if (this.products.some((prod) => prod.code === product.code)) {
+            console.log('El código del producto ya existe');
             return false
         }
-        
-        let idMax = this.getIdMax()
-        const prod = { id: idMax, title, description, price, thumbnail, code, stock }
-        
+    
+        const idMax = this.getIdMax()
+        const prod = { id: idMax, ...product }
         this.products.push(prod)
+        this.saveProductsToFile()
         return true
     }
 
@@ -44,15 +73,76 @@ class ProductManager{
         }
         return product
     }
+
+    updateProduct(id, updatedFields) {
+        const productIndex = this.products.findIndex((prod) => prod.id === id)
+        if (productIndex === -1) {
+            console.log('Producto no encontrado')
+            return false
+        }
+        const product = { ...this.products[productIndex], ...updatedFields }
+        this.products[productIndex] = product
+        this.saveProductsToFile()
+        return true;
+    }
+    
+    deleteProduct(id) {
+        const productIndex = this.products.findIndex((prod) => prod.id === id)
+        if (productIndex === -1) {
+            console.log('Producto no encontrado')
+            return false;
+        }
+        this.products.splice(productIndex, 1)
+        this.saveProductsToFile()
+        return true;
+    }
 }
+//crear producto
+const productManager = new ProductManager('data.json')
+const newProduct = {
+    title: "Conjunto Night Fire",
+    description: "Conjunto de top rojo y short negro",
+    price: 5199,
+    thumbnail: "/imgX/conjuntoX.jpg",
+    code: "CO1RX",
+    stock: 10
+}
+const newProduct2 = {
+    title: "Short",
+    description: "short negro",
+    price: 5199,
+    thumbnail: "/imgX/shortX.jpg",
+    code: "SH1B",
+    stock: 10
+}
+productManager.addProduct(newProduct)
+productManager.addProduct(newProduct2)
 
-const product = new ProductManager()
-product.addProducts('Conjunto Night Fire','Conjunto de top rojo y short negro',5199,'/imgX/conjuntoX.jpg','CO1R',10)
-product.addProducts('Short','short negro',5199,'/imgX/shortX.jpg','SH1B',10)
-product.addProducts('Calza Floral','Calza Verde ',5199,'/imgX/CalzaX.jpg','CA1G',10)
+//consultarlos
+const products = productManager.getProducts()
+console.log('Consulta de productos ----------------------')
+console.log(products)
 
-console.log(product.getProducts());
+//buscar por ID
+const product = productManager.getProductById(2)
+console.log('Busqueda por ID ----------------------')
+console.log(product)
 
-const product1 = product.getProductById(1)
+//actualizar producto
+const updatedProduct = {
+    id: 2,
+    title: "Conjunto Actualizado",
+    description: "Descripción conjunto actualizada",
+    price: 7000,
+    thumbnail: "/imgX/shortX.jpg",
+    code: "CO1R",
+    stock: 5
+}
+productManager.updateProduct(2, updatedProduct)
+console.log('Consulta de productos actualizado ----------------------')
+console.log(products)
 
-console.log(product1)
+//eliminar producto
+productManager.deleteProduct(1);
+console.log('Consulta de productos eliminado ----------------------')
+console.log(products)

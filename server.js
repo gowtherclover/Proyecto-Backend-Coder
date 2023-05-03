@@ -1,148 +1,44 @@
-const fs = require ("fs")
-class ProductManager{
-    constructor(path) {
-        this.path = path
-        const products = this.readProductsFromFile();
-        this.products = products
-    }
+/* const http = require("http")
 
-    readProductsFromFile() {
-        try {
-            const data = fs.readFileSync(this.path, 'utf-8')
-            if (data) {
-                return JSON.parse(data);
-            }
-            else{
-                return []
-            }
-            
-        } catch (error) {
-            console.error(error)
-            return [];
-        }
-    }
+const server = http.createServer((req,res)=>{
+    console.log("hora " + Date.now());
+    res.end("hola mundo")
+})
 
-    saveProductsToFile() {
-        try {
-            const data = JSON.stringify(this.products)
-            fs.writeFileSync(this.path, data)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-    
+server.listen(8080,()=>{
+    console.log("Server is running on http://localhost:8080");
+}) */
+const express = require("express")
+//importamos el productmanager que esta en otro archivo
 
-    getProducts(){
-        return this.products
-    }
+const app = express()
+const PORT = 4000
 
-    getIdMax(){
-        let idMax = 0
-        this.products.forEach(prod => {
-            if(prod.id > idMax){
-                idMax=prod.id
-            }
-        });
-        idMax++
-        return idMax
-    }
+app.use(express.urlencoded({ extended: true }))
 
-    addProduct(product) {
-        if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
-            console.log('Faltan campos obligatorios');
-            return false
-        }
-    
-        if (this.products.some((prod) => prod.code === product.code)) {
-            console.log('El código del producto ya existe');
-            return false
-        }
-    
-        const idMax = this.getIdMax()
-        const prod = { id: idMax, ...product }
-        this.products.push(prod)
-        this.saveProductsToFile()
-        return true
-    }
+app.get('/products',(req,res)=>{
+    res.json()
+})
 
-    getProductById(id) {
-        const product = this.products.find(prod => prod.id === id)
-        if (!product) {
-            console.log('Producto buscado por ID no encontrado')
-            return null
-        }
-        return product
-    }
+let animales=[
+    {id:1,animal:'leon',caracteristica:'4 patas'},
+    {id:2,animal:'lobo',caracteristica:'4 patas'},
+    {id:3,animal:'perro',caracteristica:'4 patas'},
+]
 
-    updateProduct(id, updatedFields) {
-        const productIndex = this.products.findIndex((prod) => prod.id === id)
-        if (productIndex === -1) {
-            console.log('Producto para actualizar no encontrado')
-            return false
-        }
-        const product = { ...this.products[productIndex], ...updatedFields }
-        this.products[productIndex] = product
-        this.saveProductsToFile()
-        return true;
-    }
-    
-    deleteProduct(id) {
-        const productIndex = this.products.findIndex((prod) => prod.id === id)
-        if (productIndex === -1) {
-            console.log('Producto para eliminar no encontrado')
-            return false;
-        }
-        this.products.splice(productIndex, 1)
-        this.saveProductsToFile()
-        return true;
-    }
-}
-//crear producto
-const productManager = new ProductManager('data.json')
-const newProduct = {
-    title: "Conjunto Night Fire",
-    description: "Conjunto de top rojo y short negro",
-    price: 5199,
-    thumbnail: "/imgX/conjuntoX.jpg",
-    code: "CO1RX",
-    stock: 10
-}
-const newProduct2 = {
-    title: "Short",
-    description: "short negro",
-    price: 5199,
-    thumbnail: "/imgX/shortX.jpg",
-    code: "SH1B",
-    stock: 10
-}
-productManager.addProduct(newProduct)
-productManager.addProduct(newProduct2)
+app.get('/animales/:id',(req,res)=>{
+    const id=req.params.id
+    const animalEncontrado = animales.find((c)=>c.id == id)
+    res.json(animalEncontrado)
+})
 
-//consultarlos
-const products = productManager.getProducts()
-console.log('Consulta de productos ----------------------')
-console.log(products)
+app.get('/animales',(req,res)=>{
+    const query = req.query
+    console.log(query);
+    res.send('animal X')
+})
 
-//buscar por ID
-const product = productManager.getProductById(2)
-console.log('Busqueda por ID ----------------------')
-console.log(product)
 
-//actualizar producto
-const updatedProduct = {
-    id: 2,
-    title: "Conjunto Actualizado",
-    description: "Descripción conjunto actualizada",
-    price: 7000,
-    thumbnail: "/imgX/shortX.jpg",
-    code: "CO1R",
-    stock: 5
-}
-productManager.updateProduct(2, updatedProduct)
-console.log('Consulta de productos actualizado ----------------------')
-console.log(products)
-
-//eliminar producto
-productManager.deleteProduct(1);
-console.log('Consulta de productos eliminado ----------------------')
-console.log(products)
+app.listen(PORT,()=>{
+    console.log(`escuchando en el servidor puerto ${PORT}`);
+})

@@ -1,24 +1,31 @@
-const express = require("express")
-const ProductManager = require('./productManager')
+import express from "express"
+import { ProductManager } from '../functions/productManager.js';
+export const productsRouter = express.Router()
 
-const app = express()
-const PORT = 4000
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-const productManager = new ProductManager('data.json')
+const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT PRODUCTS
-app.get('/products/:id',(req,res)=>{
-    const id=req.params.id
-    const productoEncontrado = productManager.getProductById(id)
-    return res
-    .status(200)
-    .json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
+productsRouter.get('/:id',(req,res)=>{
+    try{
+        const id=req.params.id
+        const productoEncontrado = productManager.getProductById(id)
+        if (productoEncontrado) {
+            return res
+            .status(201).
+            json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
+        }
+        else{
+            return res
+            .status(400).
+            json({status:"error", msg:'no se encontro el producto'})
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'no se pudo encontrar el producto', error: error.message });
+    }
 })
 
-app.get('/products', (req,res)=>{
+productsRouter.get('/', (req,res)=>{
     try{
         const query = req.query
         const limit = query.limit
@@ -48,8 +55,7 @@ app.get('/products', (req,res)=>{
     
 })
 
-//BORRAR UN PRODUCTO (NECEISTO PASAR ID)
-app.delete('/products/:id', async(req,res)=>{
+productsRouter.delete('/:id', async(req,res)=>{
     const id=req.params.id
     const deletedProduct = await productManager.deleteProduct(id)
     return res
@@ -57,8 +63,7 @@ app.delete('/products/:id', async(req,res)=>{
     json({status:"success", msg:'producto eliminado',data:deletedProduct})
 })
 
-//CREAR UN PRODUCTO (NO NECEISTO PASAR ID)
-app.post('/products', async (req,res)=>{
+productsRouter.post('/', async (req,res)=>{
     try{
         const producto = req.body
         const createdProduct = await productManager.addProduct(producto)
@@ -80,7 +85,7 @@ app.post('/products', async (req,res)=>{
 })
 
 //MODIFICAR UN PRODUCTO (NECEISTO PASAR ID)
-app.put('/products/:id',async (req,res)=>{
+productsRouter.put('/:id',async (req,res)=>{
     const id=req.params.id
     const newBody=req.body
     const updatedProduct = await productManager.updateProduct(id, newBody)
@@ -96,14 +101,3 @@ app.put('/products/:id',async (req,res)=>{
     json({status:"success", msg:'producto modificado',data:updatedProduct})
 })
 //FIN ENDPOINT PRODUCTS
-
-app.get('*', (req,res)=>{
-    return res
-    .status(404)
-    .json({status:"error", msg:'no se encuentra esa ruta',data:{}})
-})
-
-
-app.listen(PORT,()=>{
-    console.log(`escuchando en el servidor puerto http://localhost:${PORT}`);
-})

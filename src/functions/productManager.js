@@ -1,5 +1,5 @@
-const fs = require ("fs")
-class ProductManager{
+import fs from "fs";
+export class ProductManager{
     constructor(path) {
         this.path = path
         this.readProductsFromFile()
@@ -93,5 +93,3 @@ class ProductManager{
         return true;
     }
 }
-
-module.exports = ProductManager

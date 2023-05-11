@@ -60,17 +60,25 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
         const cid = req.params.cid
         const pid = req.params.pid
         const productById= await productManager.getProductById(pid)
-        const createdProduct = await cartManager.addProductToCart(cid,productById)
-        if (createdProduct) {
-            return res
-            .status(201).
-            json({status:"success", msg:'producto agregado al carrito'})
+        if (productById) {
+            const createdProduct = await cartManager.addProductToCart(cid,productById)
+            if (createdProduct) {
+                return res
+                .status(201).
+                json({status:"success", msg:'producto agregado al carrito'})
+            }
+            else{
+                return res
+                .status(400).
+                json({status:"error", msg:'no se agrego el producto al carrito'})
+            }
         }
         else{
             return res
-            .status(400).
-            json({status:"error", msg:'no se agrego el producto al carrito'})
+                .status(400).
+                json({status:"error", msg:'no se encontro producto para agregar al carrito'})
         }
+        
     }
     catch (error) {
         return res.status(500).json({ status: 'error', msg: 'no se pudo agregar el producto al carrito', error: error.message });

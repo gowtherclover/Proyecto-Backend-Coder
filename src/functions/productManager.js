@@ -98,7 +98,7 @@ export class ProductManager{
         const product = this.products.find(prod => parseInt(prod.id) === parseInt(id))
         if (!product) {
             console.log('Producto buscado por ID no encontrado')
-            return null
+            return false
         }
         return product
     }

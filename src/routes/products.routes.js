@@ -1,6 +1,5 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js';
-import { uploader } from "../utils.js";
 export const productsRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
@@ -86,15 +85,10 @@ productsRouter.post('/', async (req,res)=>{
 })
 
 //MODIFICAR UN PRODUCTO (NECEISTO PASAR pid)
-productsRouter.put('/:pid', uploader.single('file'), async (req,res)=>{
-    if (!req.file) {
-        return res
-        .status(400).
-        json({status:"error", msg:'antes suba un archivo para poder modificar el producto'})
-    }
+productsRouter.put('/:pid',async (req,res)=>{
     const pid=req.params.pid
-    const path =req.file.filename;
-    const newBody = { ...req.body, url: `http://localhost:8080/${path}` };
+    const newBody=req.body
+    console.log(newBody);
     const updatedProduct = await productManager.updateProduct(pid, newBody)
     if (!updatedProduct) {
         console.log('Producto para actualizar no encontrado')

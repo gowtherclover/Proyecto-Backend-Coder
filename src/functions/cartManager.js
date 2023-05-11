@@ -61,39 +61,6 @@ export class ProductManager{
         return true
     }
 
-    async addToCart(product) {
-
-        const idMax = this.getIdMax()
-        const prod = { id: idMax, ...product }
-        this.products.push(prod)
-        await this.saveProductsToFile()
-        return true
-    }
-
-    async addProductToCart(cid, product) {
-        const productIndex = this.products.findIndex((prod) => parseInt(prod.id) === parseInt(cid))
-        const newProduct = { id:product.id }
-
-        if (productIndex !== -1) {
-            const cartObtained = this.products[productIndex];
-            const prodIndex = cartObtained.products.findIndex((el) => parseInt(el.id) === parseInt(product.id))
-            if (prodIndex !== -1) {
-                cartObtained.products[prodIndex].quantity++
-            }
-            else{
-                newProduct.quantity = 1
-                cartObtained.products.push(newProduct)
-            }
-        } else {
-            console.log('Carrito para agregar producto no encontrado')
-            return false
-        }
-        
-        await this.saveProductsToFile()
-        return true;
-
-    }
-
     getProductById(id) {
         const product = this.products.find(prod => parseInt(prod.id) === parseInt(id))
         if (!product) {

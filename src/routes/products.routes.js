@@ -56,11 +56,16 @@ productsRouter.get('/', (req,res)=>{
 })
 
 productsRouter.delete('/:pid', async(req,res)=>{
-    const pid=req.params.pid
-    const deletedProduct = await productManager.deleteProduct(pid)
-    return res
-    .status(200).
-    json({status:"success", msg:'producto eliminado',data:deletedProduct})
+    try{
+        const pid=req.params.pid
+        const deletedProduct = await productManager.deleteProduct(pid)
+        return res
+        .status(200).
+        json({status:"success", msg:'producto eliminado',data:deletedProduct})
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'no se pudo eliminar el producto', error: error.message });
+    }
 })
 
 productsRouter.post('/', async (req,res)=>{
@@ -86,19 +91,24 @@ productsRouter.post('/', async (req,res)=>{
 
 //MODIFICAR UN PRODUCTO (NECEISTO PASAR pid)
 productsRouter.put('/:pid',async (req,res)=>{
-    const pid=req.params.pid
-    const newBody=req.body
-    console.log(newBody);
-    const updatedProduct = await productManager.updateProduct(pid, newBody)
-    if (!updatedProduct) {
-        console.log('Producto para actualizar no encontrado')
-        return res
-        .status(404)
-        .json({status:"error", msg:'Producto para actualizar no encontrado',data:{}})
-    }
+    try{
+        const pid=req.params.pid
+        const newBody=req.body
+        console.log(newBody);
+        const updatedProduct = await productManager.updateProduct(pid, newBody)
+        if (!updatedProduct) {
+            console.log('Producto para actualizar no encontrado')
+            return res
+            .status(404)
+            .json({status:"error", msg:'Producto para actualizar no encontrado',data:{}})
+        }
 
-    return res
-    .status(200).
-    json({status:"success", msg:'producto modificado',data:updatedProduct})
+        return res
+        .status(200).
+        json({status:"success", msg:'producto modificado',data:updatedProduct})
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'no se pudo actualizar el producto', error: error.message });
+    }
 })
 //FIN ENDPOINT PRODUCTS

@@ -11,7 +11,7 @@ cartsRouter.get('/', (req,res)=>{
         let allProducts = cartManager.getProducts()
         return res
         .status(200).
-        json({status:"success", msg:'cantidad de productos en el carrito',data:allProducts})
+        json({status:"success", msg:'productos en el carrito',data:allProducts})
     }
     catch (error) {
         console.log(error)
@@ -26,12 +26,12 @@ cartsRouter.get('/:cid',(req,res)=>{
     if (productoEncontrado) {
         return res
         .status(201).
-        json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
+        json({status:"success", msg:'carrito encontrado',data:productoEncontrado})
     }
     else{
         return res
         .status(400).
-        json({status:"error", msg:'no se encontro el producto'})
+        json({status:"error", msg:'no se encontro el carrito indicado'})
     }
 })
 
@@ -65,12 +65,12 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
             if (createdProduct) {
                 return res
                 .status(201).
-                json({status:"success", msg:'producto agregado al carrito'})
+                json({status:"success", msg:'producto agregado al carrito',data:createdProduct})
             }
             else{
                 return res
                 .status(400).
-                json({status:"error", msg:'no se agrego el producto al carrito'})
+                json({status:"error", msg:'NO se agrego el producto al carrito'})
             }
         }
         else{

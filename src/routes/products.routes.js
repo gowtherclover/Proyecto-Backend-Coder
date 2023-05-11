@@ -1,14 +1,15 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js';
+import { uploader } from "../utils.js";
 export const productsRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT PRODUCTS
-productsRouter.get('/:id',(req,res)=>{
+productsRouter.get('/:pid',(req,res)=>{
     try{
-        const id=req.params.id
-        const productoEncontrado = productManager.getProductById(id)
+        const pid=req.params.pid
+        const productoEncontrado = productManager.getProductById(pid)
         if (productoEncontrado) {
             return res
             .status(201).
@@ -55,9 +56,9 @@ productsRouter.get('/', (req,res)=>{
     
 })
 
-productsRouter.delete('/:id', async(req,res)=>{
-    const id=req.params.id
-    const deletedProduct = await productManager.deleteProduct(id)
+productsRouter.delete('/:pid', async(req,res)=>{
+    const pid=req.params.pid
+    const deletedProduct = await productManager.deleteProduct(pid)
     return res
     .status(200).
     json({status:"success", msg:'producto eliminado',data:deletedProduct})
@@ -84,11 +85,17 @@ productsRouter.post('/', async (req,res)=>{
     }
 })
 
-//MODIFICAR UN PRODUCTO (NECEISTO PASAR ID)
-productsRouter.put('/:id',async (req,res)=>{
-    const id=req.params.id
-    const newBody=req.body
-    const updatedProduct = await productManager.updateProduct(id, newBody)
+//MODIFICAR UN PRODUCTO (NECEISTO PASAR pid)
+productsRouter.put('/:pid', uploader.single('file'), async (req,res)=>{
+    if (!req.file) {
+        return res
+        .status(400).
+        json({status:"error", msg:'antes suba un archivo para poder modificar el producto'})
+    }
+    const pid=req.params.pid
+    const path =req.file.filename;
+    const newBody = { ...req.body, url: `http://localhost:8080/${path}` };
+    const updatedProduct = await productManager.updateProduct(pid, newBody)
     if (!updatedProduct) {
         console.log('Producto para actualizar no encontrado')
         return res

@@ -1,12 +1,12 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js'
 import { uploader } from "../utils.js"
-export const petsRouter = express.Router()
+export const cartsRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT PRODUCTS
-petsRouter.get('/:id',(req,res)=>{
+cartsRouter.get('/:id',(req,res)=>{
     const id=req.params.id
     const productoEncontrado = productManager.getProductById(id)
     console.log(productoEncontrado);
@@ -15,7 +15,7 @@ petsRouter.get('/:id',(req,res)=>{
     .json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
 })
 
-petsRouter.get('/', (req,res)=>{
+cartsRouter.get('/', (req,res)=>{
     try{
         const query = req.query
         const limit = query.limit
@@ -45,7 +45,7 @@ petsRouter.get('/', (req,res)=>{
     
 })
 
-petsRouter.delete('/:id', async(req,res)=>{
+cartsRouter.delete('/:id', async(req,res)=>{
     const id=req.params.id
     const deletedProduct = await productManager.deleteProduct(id)
     return res
@@ -53,7 +53,7 @@ petsRouter.delete('/:id', async(req,res)=>{
     json({status:"success", msg:'producto eliminado',data:deletedProduct})
 })
 
-petsRouter.post('/', async (req,res)=>{
+cartsRouter.post('/', async (req,res)=>{
     try{
         const pet = req.body
         const createdProduct = await productManager.addProduct(pet)
@@ -76,7 +76,7 @@ petsRouter.post('/', async (req,res)=>{
 })
 
 //MODIFICAR UN PRODUCTO (NECEISTO PASAR ID)
-petsRouter.put('/:id',uploader.single('file'),async (req,res)=>{
+cartsRouter.put('/:id',uploader.single('file'),async (req,res)=>{
     if (!req.file) {
         return res
         .status(400).

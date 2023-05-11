@@ -1,10 +1,9 @@
-
 import express from "express"
 import { productsRouter } from "./routes/products.routes.js"
-import { petsRouter } from "./routes/pets.routes.js"
+import { cartsRouter } from "./routes/carts.routes.js"
 
 const app = express()
-const PORT = 4000
+const PORT = 8080
 
 
 
@@ -18,8 +17,8 @@ app.use(express.static("public"))
 
 
 //todos los ENDPOINTS
-app.use('/products', productsRouter)
-app.use('/pets', petsRouter)
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
 
 //otros ENDPOINTS
 app.get('*', (req,res)=>{

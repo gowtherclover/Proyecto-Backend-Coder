@@ -21,17 +21,10 @@ const httpServer = app.listen(PORT,()=>{
 const socketServer = new Server(httpServer)
 
 socketServer.on('connection',(socket)=>{
-    //BACK ataja los msg del front
     socket.on('msg_front_back',(msg)=>{
         console.log(msg);
         socketServer.emit('msg_back_front', msg)
     })
-
-    //back manda msg al front
-    /* socket.emit('msg_back_front',{
-        msg:'hola mundo desde el back',
-        user:'server'
-    }) */
     
 })
 

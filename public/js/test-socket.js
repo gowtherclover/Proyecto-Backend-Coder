@@ -14,13 +14,4 @@ messageInput.addEventListener('input', () => {
 socket.on('msg_back_front', (msg) => {
     console.log(msg);
     messageParagraph.textContent = msg.msg;
-  });
-
-/* socket.emit('msg_front_back',{
-    msg:'hola mundo desde el front',
-    user:'usuario anonimo'
-}) 
-
-socket.on('msg_back_front',(msg)=>{
-    console.log(msg);
-})*/
+});

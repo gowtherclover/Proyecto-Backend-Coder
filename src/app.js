@@ -10,10 +10,6 @@ import {Server} from 'socket.io'
 const app = express()
 const PORT = 8080
 
-/* app.listen(PORT,()=>{
-    console.log(`escuchando en el servidor puerto http://localhost:${PORT}`);
-}) */
-
 const httpServer = app.listen(PORT,()=>{
     console.log(`escuchando en el servidor puerto http://localhost:${PORT}`);
 })

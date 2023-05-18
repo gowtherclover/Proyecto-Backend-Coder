@@ -32,6 +32,15 @@ export class ProductManager{
         return this.products
     }
 
+    getIDs(){
+        let IDsProd=[]
+        this.products.forEach(el => {
+            IDsProd.push(el.id)
+        });
+
+        return(IDsProd);
+    }
+
     getIdMax(){
         let idMax = 0
         this.products.forEach(prod => {
@@ -44,7 +53,8 @@ export class ProductManager{
     }
 
     async addProduct(product) {
-        if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock || !product.category || !product.status) {
+        console.log(product);
+        if (!product.title || !product.description || !product.price || !product.thumbnail || !product.path || !product.code || !product.stock || !product.category || !product.status) {
             console.log('Faltan campos obligatorios');
             return false
         }
@@ -116,13 +126,23 @@ export class ProductManager{
     }
     
     async deleteProduct(id) {
-        const productIndex = this.products.findIndex((prod) => parseInt(prod.id) === parseInt(id))
+        const productIndex = this.products.findIndex((prod) => parseInt(prod.id) === parseInt(id));
         if (productIndex === -1) {
-            console.log('Producto para eliminar no encontrado')
+            console.log('Producto para eliminar no encontrado');
             return false;
         }
-        this.products.splice(productIndex, 1)
-        await this.saveProductsToFile()
-        return true;
-    }
+
+        const filePath = this.products[productIndex].path
+
+        fs.unlink(filePath, (err) => {
+            if (err) {
+            console.error('Error al eliminar el archivo:', err)
+            return false
+            }
+
+            this.products.splice(productIndex, 1)
+            this.saveProductsToFile()
+            return true
+        });
+        }
 }

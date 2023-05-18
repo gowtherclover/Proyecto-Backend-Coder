@@ -7,11 +7,10 @@ const productManager = new ProductManager('./src/data/data.json')
 
 realTimeProductsRouter.get('/', (req,res)=>{
     try{
-        let allProducts = productManager.getProducts()
-
+        let IDs = productManager.getIDs()
         return res
         .status(200)
-        .render('realtimeproducts', {allProducts})
+        .render('realtimeproducts', {IDs})
     }
     catch (error) {
         return res.status(500).json({ status: "error", msg: "Error al obtener los productos" })

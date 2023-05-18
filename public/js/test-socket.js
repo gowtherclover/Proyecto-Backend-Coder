@@ -7,12 +7,15 @@ const pid = document.getElementById('pid')
 const form = document.getElementById('productForm');
 const deleteForm = document.getElementById('deleteProdForm');
 const fileInput = document.getElementById('thumbnail')
+const getPID = document.getElementById('getPID')
 
 document.addEventListener('DOMContentLoaded', () => {
   getProducts();
+  getIDs()
 });
 
 let thumbnail
+let allProd
 
 fileInput.addEventListener('change', (event) => {
   thumbnail = event.target.files[0];
@@ -94,7 +97,6 @@ async function deleteProduct(pid) {
   }
 }
 
-
 async function getProducts(){
   try {
     const prodResponse = await fetch('/api/products');
@@ -103,7 +105,7 @@ async function getProducts(){
       throw new Error('Error al obtener los productos');
     }
 
-    const allProd = await prodResponse.json();
+    allProd = await prodResponse.json();
 
     socket.emit('msg_front_back', {
       allProd: allProd.data
@@ -113,6 +115,24 @@ async function getProducts(){
     console.error('Error al obtener los productos:', error);
   }
 }
+
+function getIDs(){
+  let IDsProd=[]
+  allProd.forEach(el => {
+      IDsProd.push(el.id)
+  });
+
+  getPID.innerHTML=''
+  getPID.innerHTML='<option>ID</option>'
+  IDsProd.forEach(id => {
+    getPID.innerHTML=`
+    <option value='${id}'>${id}</option>
+  `
+  });
+  
+  getPID.appendChild()
+}
+
 socket.on('msg_back_front', async (allProd) => {
   messageParagraph.innerHTML=""
 

@@ -3,7 +3,6 @@ import { cartsRouter } from "./routes/carts.routes.js"
 import { productsRouter } from "./routes/products.routes.js"
 import { homeRouter } from "./routes/home.routes.js"
 import { realTimeProductsRouter } from "./routes/realtimeproducts.routes.js"
-import { testSocketRouter } from "./routes/test-socket.routes.js"
 import handlebars from "express-handlebars"
 import { __dirname } from "./utils.js"
 import {Server} from 'socket.io'
@@ -40,7 +39,6 @@ app.use('/api/carts', cartsRouter)
 //QUIERO DEVOVLER HTML DIRECTO PAGINA COMPLETA ARMADA EN BACK
 app.use("/home",homeRouter)
 app.use("/realtimeproducts",realTimeProductsRouter)
-app.use("/test-socket",testSocketRouter)
 
 //otros ENDPOINTS
 app.get('*', (req,res)=>{

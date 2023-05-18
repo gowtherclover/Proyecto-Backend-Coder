@@ -1,0 +1,65 @@
+<div>
+    Listo para trabjar con socket
+    <div style="border: red solid;">
+        <form id="productForm">
+            <div>
+                <label for="title">Título:</label>
+                <input type="text" id="title" name="title" required />
+            </div>
+
+            <div>
+                <label for="description">Descripción:</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div>
+                <label for="price">Precio:</label>
+                <input type="number" id="price" name="price" required />
+            </div>
+
+            <div>
+                <label for="code">Código:</label>
+                <input type="text" id="code" name="code" required />
+            </div>
+
+            <div>
+                <label for="thumbnail">Imagen:</label>
+                <input type="text" id="thumbnail" name="thumbnail" required />
+            </div>
+
+            <div>
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" name="stock" required />
+            </div>
+
+            <div>
+                <label for="category">Categoría:</label>
+                <input type="text" id="category" name="category" required />
+            </div>
+
+            <div>
+                <label for="status">Estado:</label>
+                <select id="status" name="status" required>
+            </div>
+            <option value="available">Disponible</option>
+            <option value="out_of_stock">Agotado</option>
+            </select>
+            <div>
+                <button type="submit" id="createProductButton">Crear Producto</button>
+            </div>
+        </form>
+    </div>
+    <div class="bloque">
+        <form id="deleteProdForm">
+        <div>
+            <label for="title">ID del producto a eliminar:</label>
+            <input type="text" id="pid" name="title" required />
+        </div>
+        <button type="submit" id="deleteProductButton" style="background-color:red;">Eliminar Producto</button>
+    </div>
+    <div id="messageParagraph" style="border: green solid;">
+        
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/test-socket.js"></script>

@@ -1,7 +1,8 @@
 import express from "express"
 import { cartsRouter } from "./routes/carts.routes.js"
 import { productsRouter } from "./routes/products.routes.js"
-import { testPlantillaProducts } from "./routes/test-plantilla-products.routes.js"
+import { homeRouter } from "./routes/home.routes.js"
+import { realTimeProductsRouter } from "./routes/realtimeproducts.routes.js"
 import { testSocketRouter } from "./routes/test-socket.routes.js"
 import handlebars from "express-handlebars"
 import { __dirname } from "./utils.js"
@@ -17,9 +18,8 @@ const httpServer = app.listen(PORT,()=>{
 const socketServer = new Server(httpServer)
 
 socketServer.on('connection',(socket)=>{
-    socket.on('msg_front_back',(msg)=>{
-        console.log(msg);
-        socketServer.emit('msg_back_front', msg)
+    socket.on('msg_front_back',(allProd)=>{
+        socketServer.emit('msg_back_front', allProd)
     })
     
 })
@@ -38,7 +38,8 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 
 //QUIERO DEVOVLER HTML DIRECTO PAGINA COMPLETA ARMADA EN BACK
-app.use("/test-plantilla-products",testPlantillaProducts)
+app.use("/home",homeRouter)
+app.use("/realtimeproducts",realTimeProductsRouter)
 app.use("/test-socket",testSocketRouter)
 
 //otros ENDPOINTS

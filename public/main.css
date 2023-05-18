@@ -1,20 +1,5 @@
-p{
-    color:blueviolet
+@import './tailwind.css';
+
+body{
+  background-color: rgb(192, 192, 192);
 }
-form {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 20px;
-  }
-  
-  .bloque {
-    border: 1px solid red;
-    display: inline-block;
-    vertical-align: top;
-    padding: 20px;
-  }
-  
-  #messageParagraph {
-    border: 1px solid green;
-    padding: 20px;
-  }

@@ -76,7 +76,7 @@ updateProdForm.addEventListener('submit', (event) => {
     category: updCategory,
     status: updStatus
   };
-  console.log(productData);
+
   updateProduct(getPID, productData);
   
   updateProdForm.reset();
@@ -222,17 +222,17 @@ socket.on('msg_back_front', async (allProd) => {
 
     let div = document.createElement('div')
     div.innerHTML =`
-            <div>
-                <h5 class="card-title tipo">${title.toUpperCase()}</h5>
+            <div class='prods'>
+                <h5>${title.toUpperCase()}</h5>
 
-                <p >ID: ${id}</p>
-                <p >Descripcion: ${description}</p>
-                <p >Precio: ${price}</p>
-                <p >Codigo: ${code}</p>
-                <p >Stock: ${stock}</p>
-                <p >Disponibilidad: ${status}</p>
-                <p >imagen: ${thumbnail}</p>
-                <p >Categoria ${category}</p>
+                <p class=''>ID: ${id}</p>
+                <p class=''>Descripcion: ${description}</p>
+                <p class=''>Precio: ${price}</p>
+                <p class=''>Codigo: ${code}</p>
+                <p class=''>Stock: ${stock}</p>
+                <p class=''>Disponibilidad: ${status}</p>
+                <p class=''>imagen: ${thumbnail}</p>
+                <p class=''>Categoria ${category}</p>
             </div>
         </div>`;
         

@@ -70,6 +70,7 @@
                         <button type="submit" id="deleteProductButton" class="bg-red-500 text-white rounded-md px-4 py-2">Eliminar Producto</button>
                     </div>
                 </fieldset>
+            </form>
         </div>
         {{!-- Modificar --}}
         <div class="bg-white rounded-lg shadow p-4">
@@ -82,10 +83,50 @@
                         <select id="getPID" name="getPID" required class="border border-gray-300 rounded-md px-2 py-1">
                         </select>
                     </div>
+                    <div class="hidden" id="updForm">
+                        <div class="my-2">
+                            <label class="font-bold" for="title">Título:</label>
+                            <input type="text" id="updTitle" name="title" required class="border border-gray-300 rounded-md px-2 py-1"/>
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="description">Descripción:</label>
+                            <textarea id="updDescription" name="description" required class="border border-gray-300 rounded-md px-2 py-1"></textarea>
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="price">Precio:</label>
+                            <input type="number" id="updPrice" name="price" required class="border border-gray-300 rounded-md px-2 py-1" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="code">Código:</label>
+                            <input type="text" id="updCode" name="code" required class="border border-gray-300 rounded-md px-2 py-1" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="stock">Stock:</label>
+                            <input type="number" id="updStock" name="stock" required class="border border-gray-300 rounded-md px-2 py-1" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="category">Categoría:</label>
+                            <input type="text" id="updCategory" name="category" required class="border border-gray-300 rounded-md px-2 py-1" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold" for="status">Estado:</label>
+                            <select id="updStatus" name="status" required class="border border-gray-300 rounded-md px-2 py-1">
+                                <option value="available">Disponible</option>
+                                <option value="out_of_stock">Agotado</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="my-2">
                         <button type="submit" id="updateProductButton" class="bg-blue-500 text-white rounded-md px-4 py-2">Modificar Producto</button>
                     </div>
                 </fieldset>
+            </form>
         </div>
     </div>
     <div class="flex justify-center mt-4">

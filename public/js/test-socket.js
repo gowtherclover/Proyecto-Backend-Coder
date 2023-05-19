@@ -7,15 +7,16 @@ const pid = document.getElementById('pid')
 const form = document.getElementById('productForm');
 const deleteForm = document.getElementById('deleteProdForm');
 const fileInput = document.getElementById('thumbnail')
-const getPID = document.getElementById('getPID')
+const getPID = document.getElementById('getPID');
+const updForm = document.getElementById('updForm')
+const updateProdForm = document.getElementById('updateProdForm')
 
-document.addEventListener('DOMContentLoaded', () => {
-  getProducts();
-  getIDs()
+document.addEventListener('DOMContentLoaded', async () => {
+  await getProducts();
 });
 
 let thumbnail
-let allProd
+let allProd = []
 
 fileInput.addEventListener('change', (event) => {
   thumbnail = event.target.files[0];
@@ -55,6 +56,34 @@ deleteForm.addEventListener('submit', (event) => {
   deleteForm.reset();
 });
 
+updateProdForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  
+  const updTitle = document.getElementById('updTitle').value;
+  const updDescription = document.getElementById('updDescription').value;
+  const updPrice = document.getElementById('updPrice').value;
+  const updCode = document.getElementById('updCode').value;
+  const updStock = document.getElementById('updStock').value;
+  const updCategory = document.getElementById('updCategory').value;
+  const updStatus = document.getElementById('updStatus').value;
+  
+  const productData = {
+    title: updTitle,
+    description: updDescription,
+    price: updPrice,
+    code: updCode,
+    stock: updStock,
+    category: updCategory,
+    status: updStatus
+  };
+  console.log(productData);
+  updateProduct(getPID, productData);
+  
+  updateProdForm.reset();
+});
+
+getPID.addEventListener('change', prodSelection)
+
 async function createProduct(product) {
   try {
 
@@ -70,7 +99,7 @@ async function createProduct(product) {
     const data = await response.json();
     console.log('Producto creado:', data);
 
-    getProducts()
+    await getProducts()
 
   } catch (error) {
     console.error('Error al crear el producto:', error);
@@ -90,10 +119,35 @@ async function deleteProduct(pid) {
     const data = await response.json();
     console.log('Producto eliminado:', data);
 
-    getProducts()
+    await getProducts()
 
   } catch (error) {
     console.error('Error al eliminar el producto:', error);
+  }
+}
+
+async function updateProduct(getPID, product) {
+  try {
+
+    const response = await fetch(`/api/products/${getPID.value}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(product)
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al modificar el producto');
+    }
+
+    const data = await response.json();
+    console.log('Producto modificado:', data);
+
+    await getProducts()
+
+  } catch (error) {
+    console.error('Error al modificar el producto:', error);
   }
 }
 
@@ -105,10 +159,13 @@ async function getProducts(){
       throw new Error('Error al obtener los productos');
     }
 
-    allProd = await prodResponse.json();
+    const prods = await prodResponse.json();
+    allProd= prods.data
+
+    getIDs()
 
     socket.emit('msg_front_back', {
-      allProd: allProd.data
+      allProd: allProd
     });
 
   } catch (error) {
@@ -121,16 +178,40 @@ function getIDs(){
   allProd.forEach(el => {
       IDsProd.push(el.id)
   });
-
-  getPID.innerHTML=''
-  getPID.innerHTML='<option>ID</option>'
-  IDsProd.forEach(id => {
-    getPID.innerHTML=`
-    <option value='${id}'>${id}</option>
-  `
-  });
   
-  getPID.appendChild()
+  getPID.innerHTML = '<option value="">ID</option>';
+
+  IDsProd.forEach((id) => {
+    const option = document.createElement('option');
+    option.value = id;
+    option.text = id;
+    getPID.appendChild(option);
+  });
+}
+
+function prodSelection() {
+  const selectedID = this.value;
+  if (!selectedID) {
+    console.log('No se selecciono un ID correspondiente');
+    if (updForm.classList.contains('show')) {
+      updForm.classList.add('hidden');
+      updForm.classList.remove('show')
+    }
+  }else{
+    const selectedProduct = allProd.find((product) => parseInt(product.id) === parseInt(selectedID));
+  
+    if (updForm.classList.contains('hidden')) {
+      updForm.classList.add('show');
+      updForm.classList.remove('hidden')
+    }
+  
+    document.getElementById('updTitle').value = selectedProduct.title;
+    document.getElementById('updDescription').value = selectedProduct.description;
+    document.getElementById('updPrice').value = selectedProduct.price;
+    document.getElementById('updCode').value = selectedProduct.code;
+    document.getElementById('updStock').value = selectedProduct.stock;
+    document.getElementById('updCategory').value = selectedProduct.category;
+  }
 }
 
 socket.on('msg_back_front', async (allProd) => {
@@ -158,17 +239,3 @@ socket.on('msg_back_front', async (allProd) => {
         messageParagraph.appendChild(div)
   });
 });
-
-
-/* messageInput.addEventListener('input', () => {
-  const message = messageInput.value;
-  socket.emit('msg_front_back', {
-    msg: message,
-  });
-});
-
-socket.on('msg_back_front', (msg) => {
-    console.log(msg);
-    messageParagraph.textContent = msg.msg;
-});
- */

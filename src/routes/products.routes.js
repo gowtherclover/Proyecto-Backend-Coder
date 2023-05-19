@@ -94,15 +94,9 @@ productsRouter.post('/',  uploader.single('file'), async (req,res)=>{
 })
 
 //MODIFICAR UN PRODUCTO (NECEISTO PASAR pid)
-productsRouter.put('/:pid', uploader.single('file'), async (req,res)=>{
-    if (!req.file) {
-        return res
-        .status(400).
-        json({status:"error", msg:'antes suba un archivo para poder modificar el producto'})
-    }
+productsRouter.put('/:pid', async (req,res)=>{
     const pid=req.params.pid
-    const name =req.file.filename;
-    const newBody = { ...req.body, thumbnail: `http://localhost:8080/${name},path:${req.file.path}` };
+    const newBody = req.body
     const updatedProduct = await productManager.updateProduct(pid, newBody)
     if (!updatedProduct) {
         console.log('Producto para actualizar no encontrado')

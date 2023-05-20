@@ -78,7 +78,7 @@ updateProdForm.addEventListener('submit', (event) => {
   };
 
   updateProduct(getPID, productData);
-  
+  prodSelection()
   updateProdForm.reset();
 });
 
@@ -225,14 +225,14 @@ socket.on('msg_back_front', async (allProd) => {
             <div class='prods'>
                 <h5>${title.toUpperCase()}</h5>
 
-                <p class=''>ID: ${id}</p>
-                <p class=''>Descripcion: ${description}</p>
-                <p class=''>Precio: ${price}</p>
-                <p class=''>Codigo: ${code}</p>
-                <p class=''>Stock: ${stock}</p>
-                <p class=''>Disponibilidad: ${status}</p>
-                <p class=''>imagen: ${thumbnail}</p>
-                <p class=''>Categoria ${category}</p>
+                <p>ID: ${id}</p>
+                <p>Descripcion: ${description}</p>
+                <p>Precio: ${price}</p>
+                <p>Codigo: ${code}</p>
+                <p>Stock: ${stock}</p>
+                <p>Disponibilidad: ${status}</p>
+                <p>imagen: <a class="prods__link" href="${thumbnail}" target="_blank">${title}</a></p>
+                <p>Categoria: ${category}</p>
             </div>
         </div>`;
         

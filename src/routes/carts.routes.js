@@ -1,100 +1,87 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js'
-import { uploader } from "../utils.js"
 export const cartsRouter = express.Router()
 
+const cartManager = new ProductManager('./src/data/cart.json')
 const productManager = new ProductManager('./src/data/data.json')
 
-//INICIO ENDPOINT PRODUCTS
-cartsRouter.get('/:id',(req,res)=>{
-    const id=req.params.id
-    const productoEncontrado = productManager.getProductById(id)
-    console.log(productoEncontrado);
-    return res
-    .status(200)
-    .json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
-})
-
+//INICIO ENDPOINT CARTS
 cartsRouter.get('/', (req,res)=>{
     try{
-        const query = req.query
-        const limit = query.limit
-        let allProducts = productManager.getProducts()
-
-        if (limit<=allProducts.length) {
-            allProducts = allProducts.slice(0,limit);
-            return res
-            .status(200).
-            json({status:"success", msg:'cantidad de productos limitada',data:allProducts})
-        }
-        else if (limit>=allProducts.length) {
-            return res
-            .status(400).
-            json({status:"error", msg:'la cantidad solicitada es mayor a los productos disponibles'})
-        }
-        else{
-            return res
-            .status(200).
-            json({status:"success", msg:'todos los productos',data:allProducts})
-        }
+        let allProducts = cartManager.getProducts()
+        return res
+        .status(200).
+        json({status:"success", msg:'productos en el carrito',data:allProducts})
     }
     catch (error) {
         console.log(error)
-        return res.status(500).json({ status: "error", msg: "Error al obtener los productos" })
+        return res.status(500).json({ status: "error", msg: "Error al obtener el carrito" })
     }
     
 })
 
-cartsRouter.delete('/:id', async(req,res)=>{
-    const id=req.params.id
-    const deletedProduct = await productManager.deleteProduct(id)
-    return res
-    .status(200).
-    json({status:"success", msg:'producto eliminado',data:deletedProduct})
+cartsRouter.get('/:cid',(req,res)=>{
+    const cid=req.params.cid
+    const productoEncontrado = cartManager.getProductById(cid)
+    if (productoEncontrado) {
+        return res
+        .status(201).
+        json({status:"success", msg:'carrito encontrado',data:productoEncontrado})
+    }
+    else{
+        return res
+        .status(400).
+        json({status:"error", msg:'no se encontro el carrito indicado'})
+    }
 })
 
 cartsRouter.post('/', async (req,res)=>{
     try{
-        const pet = req.body
-        const createdProduct = await productManager.addProduct(pet)
-        
+        const producto = req.body
+        const createdProduct = await cartManager.addToCart(producto)
         if (createdProduct) {
             return res
             .status(201).
-            json({status:"success", msg:'producto creado'})
+            json({status:"success", msg:'producto agregado al carrito'})
         }
         else{
             return res
             .status(400).
-            json({status:"error", msg:'no se creo el producto porque no cumple las condiciones'})
+            json({status:"error", msg:'no se agrego el producto al carrito'})
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'no se pudo agregar el producto al carrito', error: error.message });
+    }
+})
+
+cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
+    try{
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const productById= await productManager.getProductById(pid)
+        if (productById) {
+            const createdProduct = await cartManager.addProductToCart(cid,productById)
+            if (createdProduct) {
+                return res
+                .status(201).
+                json({status:"success", msg:'producto agregado al carrito',data:createdProduct})
+            }
+            else{
+                return res
+                .status(400).
+                json({status:"error", msg:'NO se agrego el producto al carrito'})
+            }
+        }
+        else{
+            return res
+                .status(400).
+                json({status:"error", msg:'no se encontro producto para agregar al carrito'})
         }
         
     }
     catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo crear el producto', error: error.message });
+        return res.status(500).json({ status: 'error', msg: 'no se pudo agregar el producto al carrito', error: error.message });
     }
 })
-
-//MODIFICAR UN PRODUCTO (NECEISTO PASAR ID)
-cartsRouter.put('/:id',uploader.single('file'),async (req,res)=>{
-    if (!req.file) {
-        return res
-        .status(400).
-        json({status:"error", msg:'antes suba un archivo para poder crear la pet'})
-    }
-    const id=req.params.id
-    const path =req.file.filename;
-    const newBody = { ...req.body, url: `http://localhost:4000/${path}` };
-    const updatedProduct = await productManager.updateProduct(id, newBody)
-    if (!updatedProduct) {
-        console.log('Producto para actualizar no encontrado')
-        return res
-        .status(404)
-        .json({status:"error", msg:'Producto para actualizar no encontrado',data:{}})
-    }
-
-    return res
-    .status(200).
-    json({status:"success", msg:'producto modificado',data:updatedProduct})
-})
-//FIN ENDPOINT PRODUCTS
+//FIN ENDPOINT CARTS

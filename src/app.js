@@ -2,7 +2,6 @@ import express from "express";
 import { cartsRouter } from "./routes/carts.routes.js";
 import { productsRouter } from "./routes/products.routes.js";
 import { usersRouter } from "./routes/users.routes.js";
-import { testPlantillaProducts } from "./routes/test-plantilla-products.routes.js";
 import { testChatRouter } from "./routes/test-chat.routes.js";
 import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
@@ -23,19 +22,19 @@ connectMongo();
 }) */
 
 const httpServer = app.listen(PORT, () => {
-  console.log(
-    `APP corriendo en ${__dirname} - escuchando en el servidor puerto http://localhost:${PORT}`
-  );
+    console.log(
+        `APP corriendo en ${__dirname} - escuchando en el servidor puerto http://localhost:${PORT}`
+    );
 });
 
 const socketServer = new Server(httpServer);
 let msgs = [];
 socketServer.on("connection", (socket) => {
-  socket.on("msg_front_back", (msg) => {
-    msgs.push(msg);
-    console.log(msgs);
-    socketServer.emit("msg_back_front", msgs);
-  });
+    socket.on("msg_front_back", (msg) => {
+        msgs.push(msg);
+        console.log(msgs);
+        socketServer.emit("msg_back_front", msgs);
+    });
 });
 
 app.use(express.json());
@@ -53,12 +52,11 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
 
 //QUIERO DEVOVLER HTML DIRECTO PAGINA COMPLETA ARMADA EN BACK
-app.use("/test-plantilla-products", testPlantillaProducts);
 app.use("/test-chat", testChatRouter);
 
 //otros ENDPOINTS
 app.get("*", (req, res) => {
-  return res
+    return res
     .status(404)
     .json({ status: "error", msg: "no se encuentra esa ruta", data: {} });
 });

@@ -78,7 +78,6 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
         }
 
         const name =req.file.filename;
-        console.log(req.file.path);
         const producto = { ...req.body, thumbnail: `http://localhost:8080/${name}`, path:`${req.file.path}` };
         const createdProduct = await productManager.addProduct(producto)
         if (createdProduct) {

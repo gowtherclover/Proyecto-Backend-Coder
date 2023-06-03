@@ -7,6 +7,8 @@ import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 import { connectMongo } from "./utils.js";
+import { homeRouter } from "./routes/home.routes.js"
+import { realTimeProductsRouter } from "./routes/realtimeproducts.routes.js"
 
 
 const app = express();
@@ -40,6 +42,12 @@ socketServer.on("connection", (socket) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+/* socketServer.on('connection',(socket)=>{
+    socket.on('msg_front_back',(allProd)=>{
+        socketServer.emit('msg_back_front', allProd)
+    })
+    
+}) */
 
 //cCONFIG DEL MOTOR DE PLANTILLAS
 app.engine("handlebars", handlebars.engine());
@@ -53,6 +61,8 @@ app.use("/api/users", usersRouter);
 
 //QUIERO DEVOVLER HTML DIRECTO PAGINA COMPLETA ARMADA EN BACK
 app.use("/test-chat", testChatRouter);
+app.use("/home",homeRouter)
+app.use("/realtimeproducts",realTimeProductsRouter)
 
 //otros ENDPOINTS
 app.get("*", (req, res) => {

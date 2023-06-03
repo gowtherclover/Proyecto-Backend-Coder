@@ -68,9 +68,17 @@ productsRouter.delete('/:pid', async(req,res)=>{
     }
 })
 
-productsRouter.post('/', async (req,res)=>{
+productsRouter.post('/',  uploader.single('file'), async (req,res)=>{
     try{
-        const producto = req.body
+        if (!req.file) {
+            return res
+            .status(400).
+            json({status:"error", msg:'antes suba un archivo para poder modificar el producto'})
+        }
+
+        const name =req.file.filename;
+        console.log(req.file.path);
+        const producto = { ...req.body, thumbnail: `http://localhost:8080/${name}`, path:`${req.file.path}` };
         const createdProduct = await productManager.addProduct(producto)
         if (createdProduct) {
             return res
@@ -94,7 +102,6 @@ productsRouter.put('/:pid',async (req,res)=>{
     try{
         const pid=req.params.pid
         const newBody=req.body
-        console.log(newBody);
         const updatedProduct = await productManager.updateProduct(pid, newBody)
         if (!updatedProduct) {
             console.log('Producto para actualizar no encontrado')

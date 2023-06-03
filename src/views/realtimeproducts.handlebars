@@ -1,0 +1,140 @@
+<h3 class="text-2xl text-center font-bold mb-4 block">Listo para trabajar con socket</h3>
+<div>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        {{!-- Crear --}}
+        <div class="bg-white rounded-lg shadow p-4">
+            <form id="productForm">
+                <fieldset>
+                    <legend class="text-lg font-bold">Agregar producto nuevo</legend>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="title">Título:</label>
+                        <input type="text" id="title" name="title" required class="border border-gray-300 rounded-md px-2 py-1 w-full"/>
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="description">Descripción:</label>
+                        <textarea id="description" name="description" required class="border border-gray-300 rounded-md px-2 py-1 w-full"></textarea>
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="price">Precio:</label>
+                        <input type="number" id="price" name="price" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="code">Código:</label>
+                        <input type="text" id="code" name="code" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="thumbnail">Imagen:</label>
+                        <input type="file" name="file" id="thumbnail" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="stock">Stock:</label>
+                        <input type="number" id="stock" name="stock" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="category">Categoría:</label>
+                        <input type="text" id="category" name="category" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                    </div>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="status">Estado:</label>
+                        <select id="status" name="status" required class="border border-gray-300 rounded-md px-2 py-1 w-full">
+                            <option value="available">Disponible</option>
+                            <option value="out_of_stock">Agotado</option>
+                        </select>
+                    </div>
+
+                    <div class="my-2">
+                        <button type="submit" id="createProductButton" class="bg-green-500 text-white rounded-md px-4 py-2">Crear Producto</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        {{!-- Eliminar --}}
+        <div class="bg-white rounded-lg shadow p-4">
+            <form id="deleteProdForm">
+                <fieldset>
+                    <legend class="text-lg font-bold">Eliminar un producto por ID</legend>
+
+                    <div class="my-2">
+                        <label class="font-bold" for="title">ID del producto a eliminar:</label>
+                        <input type="text" id="pid" name="title" required class="border border-gray-300 rounded-md px-2 py-1"/>
+                    </div>
+                    <div class="my-2">
+                        <button type="submit" id="deleteProductButton" class="bg-red-500 text-white rounded-md px-4 py-2">Eliminar Producto</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        {{!-- Modificar --}}
+        <div class="bg-white rounded-lg shadow p-4">
+            <form id="updateProdForm">
+                <fieldset>
+                    <legend class="text-lg font-bold">Modificar un producto</legend>
+
+                    <div class="my-2">
+                        <label class="font-bold block" for="status">ID del producto a modificar:</label>
+                        <select id="getPID" name="getPID" required class="border border-gray-300 rounded-md px-2 py-1 w-full">
+                        </select>
+                    </div>
+                    <div class="hidden" id="updForm">
+                        <div class="my-2">
+                            <label class="font-bold block" for="title">Título:</label>
+                            <input type="text" id="updTitle" name="title" required class="border border-gray-300 rounded-md px-2 py-1 w-full"/>
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="description">Descripción:</label>
+                            <textarea id="updDescription" name="description" required class="border border-gray-300 rounded-md px-2 py-1 w-full"></textarea>
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="price">Precio:</label>
+                            <input type="number" id="updPrice" name="price" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="code">Código:</label>
+                            <input type="text" id="updCode" name="code" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="stock">Stock:</label>
+                            <input type="number" id="updStock" name="stock" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="category">Categoría:</label>
+                            <input type="text" id="updCategory" name="category" required class="border border-gray-300 rounded-md px-2 py-1 w-full" />
+                        </div>
+
+                        <div class="my-2">
+                            <label class="font-bold block" for="status">Estado:</label>
+                            <select id="updStatus" name="status" required class="border border-gray-300 rounded-md px-2 py-1 w-full">
+                                <option value="available">Disponible</option>
+                                <option value="out_of_stock">Agotado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <button type="submit" id="updateProductButton" class="bg-blue-500 text-white rounded-md px-4 py-2">Modificar Producto</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+    <div class="flex justify-center mt-4">
+        <div id="messageParagraph" class="bg-green-100 border border-green-500 px-4 py-2 mt-4 rounded-lg">
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/test-socket.js"></script>

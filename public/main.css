@@ -1,3 +1,28 @@
-p{
-    color:blueviolet
+@import './tailwind.css';
+
+body{
+  background-color: rgb(192, 192, 192);
+}
+
+.prods{
+  -tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+  
+  padding: .5rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem/* 8px */;
+}
+
+.prods h5{
+  font-weight: bold;
+}
+
+.prods__link {
+  text-decoration: none; 
+  color: inherit;
+}
+
+.prods__link:hover, .prods__link:active {
+  --tw-border-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-border-opacity));
 }

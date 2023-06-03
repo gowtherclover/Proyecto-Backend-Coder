@@ -164,7 +164,7 @@ async function getProducts(){
 
     getIDs()
 
-    socket.emit('msg_front_back', {
+    socket.emit('prod_front_back', {
       allProd: allProd
     });
 
@@ -214,7 +214,7 @@ function prodSelection() {
   }
 }
 
-socket.on('msg_back_front', async (allProd) => {
+socket.on('prod_back_front', async (allProd) => {
   messageParagraph.innerHTML=""
 
   await allProd.allProd.forEach(el => {

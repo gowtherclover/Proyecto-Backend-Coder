@@ -38,16 +38,16 @@ socketServer.on("connection", (socket) => {
         socketServer.emit("msg_back_front", msgs);
     });
 });
+socketServer.on('connection',(socket)=>{
+    socket.on('prod_front_back',(allProd)=>{
+        socketServer.emit('prod_back_front', allProd)
+    })
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-/* socketServer.on('connection',(socket)=>{
-    socket.on('msg_front_back',(allProd)=>{
-        socketServer.emit('msg_back_front', allProd)
-    })
-    
-}) */
+
 
 //cCONFIG DEL MOTOR DE PLANTILLAS
 app.engine("handlebars", handlebars.engine());

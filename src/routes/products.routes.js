@@ -1,5 +1,6 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js';
+import { uploader } from "../utils.js";
 export const productsRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
@@ -68,7 +69,7 @@ productsRouter.delete('/:pid', async(req,res)=>{
     }
 })
 
-productsRouter.post('/',  uploader.single('file'), async (req,res)=>{
+productsRouter.post('/', uploader.single('file'), async (req,res)=>{
     try{
         if (!req.file) {
             return res

@@ -1,17 +1,15 @@
 import express from "express"
 import { ProductManager } from '../functions/productManager.js';
 import { uploader } from "../utils.js";
-import { ProductModel } from "../models/products.model.js";
 export const productsRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT PRODUCTS
-productsRouter.get('/:pid',async (req,res)=>{
+productsRouter.get('/:pid',(req,res)=>{
     try{
         const pid=req.params.pid
-        console.log(pid);
-        const productoEncontrado = await ProductModel.findOne({_id:pid})
+        const productoEncontrado = productManager.getProductById(pid)
         if (productoEncontrado) {
             return res
             .status(201).
@@ -28,17 +26,17 @@ productsRouter.get('/:pid',async (req,res)=>{
     }
 })
 
-productsRouter.get('/', async (req,res)=>{
+productsRouter.get('/', (req,res)=>{
     try{
         const query = req.query
         const limit = query.limit
-        let allProducts = await ProductModel.find({});
+        let allProducts = productManager.getProducts()
 
         if (limit<=allProducts.length) {
-            let limitProd = await ProductModel.find({},{title:true,category:true}).limit(limit);
+            allProducts = allProducts.slice(0,limit);
             return res
             .status(200).
-            json({status:"success", msg:'cantidad de productos limitada',data:limitProd})
+            json({status:"success", msg:'cantidad de productos limitada',data:allProducts})
         }
         else if (limit>=allProducts.length) {
             return res
@@ -61,7 +59,7 @@ productsRouter.get('/', async (req,res)=>{
 productsRouter.delete('/:pid', async(req,res)=>{
     try{
         const pid=req.params.pid
-        const deletedProduct = await ProductModel.deleteOne({_id:pid})
+        const deletedProduct = await productManager.deleteProduct(pid)
         return res
         .status(200).
         json({status:"success", msg:'producto eliminado',data:deletedProduct})
@@ -81,12 +79,11 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
 
         const name =req.file.filename;
         const producto = { ...req.body, thumbnail: `http://localhost:8080/${name}`, path:`${req.file.path}` };
-        console.log(producto);
-        const createdProduct = await ProductModel.create(producto)
+        const createdProduct = await productManager.addProduct(producto)
         if (createdProduct) {
             return res
             .status(201).
-            json({status:"success", msg:'producto creado',data:createdProduct})
+            json({status:"success", msg:'producto creado'})
         }
         else{
             return res
@@ -104,19 +101,8 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
 productsRouter.put('/:pid',async (req,res)=>{
     try{
         const pid=req.params.pid
-        const {price,stock,status,...rest} = req.body
-        console.log(req.body);
-        const updatedProduct = await ProductModel.findOneAndUpdate(
-            {_id:pid},
-            {$set: {
-                price: Number(price),
-                stock: Number(stock),
-                status: status === 'available',
-                ...rest
-                }
-            }
-        )
-        console.log(await ProductModel.find({_id:pid}));
+        const newBody=req.body
+        const updatedProduct = await productManager.updateProduct(pid, newBody)
         if (!updatedProduct) {
             console.log('Producto para actualizar no encontrado')
             return res

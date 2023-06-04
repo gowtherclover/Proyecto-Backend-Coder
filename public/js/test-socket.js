@@ -176,7 +176,7 @@ async function getProducts(){
 function getIDs(){
   let IDsProd=[]
   allProd.forEach(el => {
-      IDsProd.push(el.id)
+      IDsProd.push(el._id)
   });
   
   getPID.innerHTML = '<option value="">ID</option>';
@@ -198,7 +198,7 @@ function prodSelection() {
       updForm.classList.remove('show')
     }
   }else{
-    const selectedProduct = allProd.find((product) => parseInt(product.id) === parseInt(selectedID));
+    const selectedProduct = allProd.find((product) => (product._id) === (selectedID));
   
     if (updForm.classList.contains('hidden')) {
       updForm.classList.add('show');
@@ -218,14 +218,14 @@ socket.on('prod_back_front', async (allProd) => {
   messageParagraph.innerHTML=""
 
   await allProd.allProd.forEach(el => {
-    const {id,title,description,price,code,stock,status,thumbnail,category} = el
+    const {_id,title,description,price,code,stock,status,thumbnail,category} = el
 
     let div = document.createElement('div')
     div.innerHTML =`
             <div class='prods'>
                 <h5>${title.toUpperCase()}</h5>
 
-                <p>ID: ${id}</p>
+                <p>ID: ${_id}</p>
                 <p>Descripcion: ${description}</p>
                 <p>Precio: ${price}</p>
                 <p>Codigo: ${code}</p>

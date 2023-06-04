@@ -1,18 +1,17 @@
 import express from "express"
-import { CartModel } from "../models/carts.model.js"
+import { ProductManager } from '../functions/productManager.js'
 export const cartsRouter = express.Router()
+
+const cartManager = new ProductManager('./src/data/cart.json')
+const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT CARTS
 cartsRouter.get('/', (req,res)=>{
     try{
-        let allProducts = CartModel.find()
+        let allProducts = cartManager.getProducts()
         return res
         .status(200).
-        json({
-            status:"success", 
-            msg:'productos en el carrito',
-            data:allProducts
-        })
+        json({status:"success", msg:'productos en el carrito',data:allProducts})
     }
     catch (error) {
         console.log(error)
@@ -33,6 +32,26 @@ cartsRouter.get('/:cid',(req,res)=>{
         return res
         .status(400).
         json({status:"error", msg:'no se encontro el carrito indicado'})
+    }
+})
+
+cartsRouter.post('/', async (req,res)=>{
+    try{
+        const producto = req.body
+        const createdProduct = await cartManager.addToCart(producto)
+        if (createdProduct) {
+            return res
+            .status(201).
+            json({status:"success", msg:'producto agregado al carrito'})
+        }
+        else{
+            return res
+            .status(400).
+            json({status:"error", msg:'no se agrego el producto al carrito'})
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'no se pudo agregar el producto al carrito', error: error.message });
     }
 })
 

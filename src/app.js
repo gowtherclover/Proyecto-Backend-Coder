@@ -49,7 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 
-//cCONFIG DEL MOTOR DE PLANTILLAS
+//CONFIG DEL MOTOR DE PLANTILLAS
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");

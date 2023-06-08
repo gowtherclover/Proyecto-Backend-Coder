@@ -1,70 +1,68 @@
 import express from "express";
-import { ProductModel } from "../DAO/models/products.model.js";
+import { prodService } from "../services/products.service.js";
 import { uploader } from "../utils/multer.js";
 export const productsRouter = express.Router()
-
-//INICIO ENDPOINT PRODUCTS
-productsRouter.get('/:pid',async (req,res)=>{
-    try{
-        const pid=req.params.pid
-        console.log(pid);
-        const productoEncontrado = await ProductModel.findOne({_id:pid})
-        if (productoEncontrado) {
-            return res
-            .status(201).
-            json({status:"success", msg:'Producto encontrado',payload:productoEncontrado})
-        }
-        else{
-            return res
-            .status(400).
-            json({status:"error", msg:'no se encontro el producto'})
-        }
-    }
-    catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo encontrar el producto', error: error.message });
-    }
-})
 
 productsRouter.get('/', async (req,res)=>{
     try{
         const query = req.query
         const limit = query.limit
-        let allProducts = await ProductModel.find({});
+        let allProducts = await prodService.getAllProducts()
 
         if (limit<=allProducts.length) {
-            let limitProd = await ProductModel.find({},{title:true,category:true}).limit(limit);
+            let limitProd = await prodService.getAllProducts(limit)
             return res
             .status(200).
-            json({status:"success", msg:'cantidad de productos limitada',payload:limitProd})
+            json({status:"success", msg:'limited number of products',payload:limitProd})
         }
         else if (limit>=allProducts.length) {
             return res
             .status(400).
-            json({status:"error", msg:'la cantidad solicitada es mayor a los productos disponibles'})
+            json({status:"error", msg:'the quantity requested is greater than the products available'})
         }
         else{
             return res
             .status(200).
-            json({status:"success", msg:'todos los productos',payload:allProducts})
+            json({status:"success", msg:'all the products',payload:allProducts})
         }
     }
     catch (error) {
         console.log(error)
-        return res.status(500).json({ status: "error", msg: "Error al obtener los productos" })
+        return res.status(500).json({ status: "error", msg: "Error getting the products" })
     }
     
+})
+
+productsRouter.get('/:pid',async (req,res)=>{
+    try{
+        const pid=req.params.pid
+        const productFinder = await prodService.findOne(pid)
+        if (productFinder) {
+            return res
+            .status(201).
+            json({status:"success", msg:'Product found',payload:productFinder})
+        }
+        else{
+            return res
+            .status(400).
+            json({status:"error", msg:'product not found'})
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'the product could not be found', error: error.message });
+    }
 })
 
 productsRouter.delete('/:pid', async(req,res)=>{
     try{
         const pid=req.params.pid
-        const deletedProduct = await ProductModel.deleteOne({_id:pid})
+        const deletedProduct = await prodService.delete(pid)
         return res
         .status(200).
-        json({status:"success", msg:'producto eliminado',payload:deletedProduct})
+        json({status:"success", msg:'removed product',payload:deletedProduct})
     }
     catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo eliminar el producto', error: error.message });
+        return res.status(500).json({ status: 'error', msg: 'could not delete product', error: error.message });
     }
 })
 
@@ -73,60 +71,45 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
         if (!req.file) {
             return res
             .status(400).
-            json({status:"error", msg:'antes suba un archivo para poder modificar el producto'})
+            json({status:"error", msg:'before upload a file to be able to modify the product'})
         }
 
         const name =req.file.filename;
-        const producto = { ...req.body, thumbnail: `http://localhost:8080/${name}`, path:`${req.file.path}` };
-        console.log(producto);
-        const createdProduct = await ProductModel.create(producto)
+        const product = { ...req.body, thumbnail: `http://localhost:8080/${name}`, path:`${req.file.path}` };
+        const createdProduct = await prodService.create(product)
         if (createdProduct) {
             return res
             .status(201).
-            json({status:"success", msg:'producto creado',payload:createdProduct})
+            json({status:"success", msg:'product created',payload:createdProduct})
         }
         else{
             return res
             .status(400).
-            json({status:"error", msg:'no se creo el producto porque no cumple las condiciones'})
+            json({status:"error", msg:'The product was not created because it does not meet the conditions'})
         }
         
     }
     catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo crear el producto', error: error.message });
+        return res.status(500).json({ status: 'error', msg: 'could not create product', error: error.message });
     }
 })
 
-//MODIFICAR UN PRODUCTO (NECEISTO PASAR pid)
 productsRouter.put('/:pid',async (req,res)=>{
     try{
         const pid=req.params.pid
         const {price,stock,status,...rest} = req.body
-        console.log(req.body);
-        const updatedProduct = await ProductModel.findOneAndUpdate(
-            {_id:pid},
-            {$set: {
-                price: Number(price),
-                stock: Number(stock),
-                status: status === 'available',
-                ...rest
-                }
-            }
-        )
-        console.log(await ProductModel.find({_id:pid}));
+        const updatedProduct = await prodService.update({pid,price,stock,status,rest})
         if (!updatedProduct) {
-            console.log('Producto para actualizar no encontrado')
             return res
             .status(404)
-            .json({status:"error", msg:'Producto para actualizar no encontrado',payload:{}})
+            .json({status:"error", msg:'Product to update not found',payload:{}})
         }
 
         return res
         .status(200).
-        json({status:"success", msg:'producto modificado',payload:updatedProduct})
+        json({status:"success", msg:'modified product',payload:updatedProduct})
     }
     catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo actualizar el producto', error: error.message });
+        return res.status(500).json({ status: 'error', msg: 'could not update the product', error: error.message });
     }
 })
-//FIN ENDPOINT PRODUCTS

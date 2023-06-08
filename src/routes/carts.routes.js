@@ -1,68 +1,74 @@
 import express from "express"
-import { CartModel } from "../DAO/models/carts.model.js"
+import { cartService } from "../services/carts.service.js"
+import { prodService } from "../services/products.service.js"
 export const cartsRouter = express.Router()
 
-//INICIO ENDPOINT CARTS
-cartsRouter.get('/', (req,res)=>{
+cartsRouter.get('/', async (req,res)=>{
     try{
-        let allProducts = CartModel.find()
+        let allCarts = await cartService.getAllCarts()
         return res
         .status(200).
         json({
             status:"success", 
-            msg:'productos en el carrito',
-            payload:allProducts
+            msg:'products in cart',
+            payload:allCarts
         })
     }
     catch (error) {
         console.log(error)
-        return res.status(500).json({ status: "error", msg: "Error al obtener el carrito" })
+        return res.status(500).json({ status: "error", msg: "Error getting cart" })
     }
     
 })
 
-cartsRouter.get('/:cid',(req,res)=>{
-    const cid=req.params.cid
-    const productoEncontrado = cartManager.getProductById(cid)
-    if (productoEncontrado) {
-        return res
-        .status(201).
-        json({status:"success", msg:'carrito encontrado',payload:productoEncontrado})
+cartsRouter.get('/:cid', async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const cartFound = await cartService.findOne(cid);
+
+        if (cartFound) {
+            return res
+            .status(201)
+            .json({ status: "success", msg: 'cart found', payload: cartFound });
+        } else {
+            return res
+            .status(400)
+            .json({ status: "error", msg: 'The indicated cart was not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", msg: 'Internal Server Error' });
     }
-    else{
-        return res
-        .status(400).
-        json({status:"error", msg:'no se encontro el carrito indicado'})
-    }
-})
+});
 
 cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
     try{
         const cid = req.params.cid
         const pid = req.params.pid
-        const productById= await productManager.getProductById(pid)
+        const productById= await prodService.findOne(pid)
+
         if (productById) {
-            const createdProduct = await cartManager.addProductToCart(cid,productById)
+            const createdProduct = await cartService.create({cid,pid})
             if (createdProduct) {
                 return res
                 .status(201).
-                json({status:"success", msg:'producto agregado al carrito',payload:createdProduct})
+                json({status:"success", msg:'product added to cart',payload:createdProduct})
             }
             else{
                 return res
                 .status(400).
-                json({status:"error", msg:'NO se agrego el producto al carrito'})
+                json({status:"error", msg:'The product was not added to the cart'})
             }
         }
         else{
             return res
                 .status(400).
-                json({status:"error", msg:'no se encontro producto para agregar al carrito'})
+                json({status:"error", msg:'No product found to add to cart'})
         }
         
     }
     catch (error) {
-        return res.status(500).json({ status: 'error', msg: 'no se pudo agregar el producto al carrito', error: error.message });
+        return res.status(500).json({ status: 'error', msg: 'could not add product to cart', error: error.message });
     }
 })
-//FIN ENDPOINT CARTS
+

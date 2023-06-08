@@ -160,7 +160,7 @@ async function getProducts(){
     }
 
     const prods = await prodResponse.json();
-    allProd= prods.data
+    allProd= prods.payload
 
     getIDs()
 

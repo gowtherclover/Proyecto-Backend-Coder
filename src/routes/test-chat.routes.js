@@ -1,5 +1,5 @@
 import express from 'express'
-import { ProductManager } from '../functions/productManager.js'
+import { ProductManager } from '../DAO/functions/productManager.js'
 export const testChatRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')

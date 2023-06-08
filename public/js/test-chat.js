@@ -1,16 +1,16 @@
-const socket = io()
+const socket = io();
 
 const chatBox = document.getElementById("input-msg");
 
-let nombreUsuario = ""
+let emailIngresado = "";
 
 async function main() {
-  const { value: nombre } = await Swal.fire({
-    title: "Enter your name",
+  const { value: email } = await Swal.fire({
+    title: "Enter your email",
     input: "text",
-    inputLabel: "Your name",
+    inputLabel: "Your email",
     inputValue: "",
-    allowOutsideClick:false,
+    allowOutsideClick: false,
     showCancelButton: false,
     inputValidator: (value) => {
       if (!value) {
@@ -19,11 +19,11 @@ async function main() {
     },
   });
 
-  if (nombre) {
-    nombreUsuario = nombre;
-    Swal.fire(`Your name is ${nombreUsuario}`);
+  if (email) {
+    emailIngresado = email;
+    Swal.fire(`Your email is ${emailIngresado}`);
   } else {
-    Swal.fire(`Nombre no ingresado`);
+    Swal.fire(`email no ingresado`);
   }
 }
 
@@ -32,37 +32,19 @@ main();
 chatBox.addEventListener("keyup", ({ key }) => {
   if (key == "Enter") {
     socket.emit("msg_front_back", {
-      msg: chatBox.value,
-      user: nombreUsuario,
+      message: chatBox.value,
+      user: emailIngresado,
     });
     chatBox.value = "";
   }
 });
 
-socket.on('msg_back_front', (msgs) => {
-  const divMSG = document.getElementById('div-msgs')
+socket.on("msg_back_front", (msgs) => {
+  const divMSG = document.getElementById("div-msgs");
 
-  let formato = ''
+  let formato = "";
   msgs.forEach((msg) => {
-    formato = formato+ '<br>'+ msg.user+': ' + msg.msg
+    formato = formato + "<br>" + msg.user + ": " + msg.message;
   });
-  divMSG.innerHTML = formato
+  divMSG.innerHTML = formato;
 });
-
-
-
-/* const messageInput = document.getElementById('messageInput');
-const messageParagraph = document.getElementById('messageParagraph');
-
-messageInput.addEventListener('input', () => {
-  const message = messageInput.value;
-  socket.emit('msg_front_back', {
-    msg: message,
-    user: 'usuario anonimo'
-  });
-});
-
-socket.on('msg_back_front', (msg) => {
-    console.log(msg);
-    messageParagraph.textContent = msg.msg;
-}); */

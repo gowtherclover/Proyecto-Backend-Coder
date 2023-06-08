@@ -1,6 +1,6 @@
 import express from "express"
-import { ProductManager } from '../functions/productManager.js'
-import { uploader } from "../utils.js";
+import { ProductManager } from '../DAO/functions/productManager.js'
+
 
 export const homeRouter = express.Router()
 

@@ -1,5 +1,5 @@
 import express from "express"
-import { ProductManager } from '../functions/productManager.js'
+import { ProductManager } from '../../DAO/functions/productManager.js'
 export const cartsRouter = express.Router()
 
 const cartManager = new ProductManager('./src/data/cart.json')
@@ -11,7 +11,7 @@ cartsRouter.get('/', (req,res)=>{
         let allProducts = cartManager.getProducts()
         return res
         .status(200).
-        json({status:"success", msg:'productos en el carrito',data:allProducts})
+        json({status:"success", msg:'productos en el carrito',payload:allProducts})
     }
     catch (error) {
         console.log(error)
@@ -26,7 +26,7 @@ cartsRouter.get('/:cid',(req,res)=>{
     if (productoEncontrado) {
         return res
         .status(201).
-        json({status:"success", msg:'carrito encontrado',data:productoEncontrado})
+        json({status:"success", msg:'carrito encontrado',payload:productoEncontrado})
     }
     else{
         return res
@@ -65,7 +65,7 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
             if (createdProduct) {
                 return res
                 .status(201).
-                json({status:"success", msg:'producto agregado al carrito',data:createdProduct})
+                json({status:"success", msg:'producto agregado al carrito',payload:createdProduct})
             }
             else{
                 return res

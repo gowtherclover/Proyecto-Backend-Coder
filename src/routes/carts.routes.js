@@ -1,5 +1,5 @@
 import express from "express"
-import { CartModel } from "../models/carts.model.js"
+import { CartModel } from "../DAO/models/carts.model.js"
 export const cartsRouter = express.Router()
 
 //INICIO ENDPOINT CARTS
@@ -11,7 +11,7 @@ cartsRouter.get('/', (req,res)=>{
         json({
             status:"success", 
             msg:'productos en el carrito',
-            data:allProducts
+            payload:allProducts
         })
     }
     catch (error) {
@@ -27,7 +27,7 @@ cartsRouter.get('/:cid',(req,res)=>{
     if (productoEncontrado) {
         return res
         .status(201).
-        json({status:"success", msg:'carrito encontrado',data:productoEncontrado})
+        json({status:"success", msg:'carrito encontrado',payload:productoEncontrado})
     }
     else{
         return res
@@ -46,7 +46,7 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
             if (createdProduct) {
                 return res
                 .status(201).
-                json({status:"success", msg:'producto agregado al carrito',data:createdProduct})
+                json({status:"success", msg:'producto agregado al carrito',payload:createdProduct})
             }
             else{
                 return res

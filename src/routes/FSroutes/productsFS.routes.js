@@ -13,7 +13,7 @@ productsRouter.get('/:pid',(req,res)=>{
         if (productoEncontrado) {
             return res
             .status(201).
-            json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
+            json({status:"success", msg:'Producto encontrado',payload:productoEncontrado})
         }
         else{
             return res
@@ -36,7 +36,7 @@ productsRouter.get('/', (req,res)=>{
             allProducts = allProducts.slice(0,limit);
             return res
             .status(200).
-            json({status:"success", msg:'cantidad de productos limitada',data:allProducts})
+            json({status:"success", msg:'cantidad de productos limitada',payload:allProducts})
         }
         else if (limit>=allProducts.length) {
             return res
@@ -46,7 +46,7 @@ productsRouter.get('/', (req,res)=>{
         else{
             return res
             .status(200).
-            json({status:"success", msg:'todos los productos',data:allProducts})
+            json({status:"success", msg:'todos los productos',payload:allProducts})
         }
     }
     catch (error) {
@@ -62,7 +62,7 @@ productsRouter.delete('/:pid', async(req,res)=>{
         const deletedProduct = await productManager.deleteProduct(pid)
         return res
         .status(200).
-        json({status:"success", msg:'producto eliminado',data:deletedProduct})
+        json({status:"success", msg:'producto eliminado',payload:deletedProduct})
     }
     catch (error) {
         return res.status(500).json({ status: 'error', msg: 'no se pudo eliminar el producto', error: error.message });
@@ -107,12 +107,12 @@ productsRouter.put('/:pid',async (req,res)=>{
             console.log('Producto para actualizar no encontrado')
             return res
             .status(404)
-            .json({status:"error", msg:'Producto para actualizar no encontrado',data:{}})
+            .json({status:"error", msg:'Producto para actualizar no encontrado',payload:{}})
         }
 
         return res
         .status(200).
-        json({status:"success", msg:'producto modificado',data:updatedProduct})
+        json({status:"success", msg:'producto modificado',payload:updatedProduct})
     }
     catch (error) {
         return res.status(500).json({ status: 'error', msg: 'no se pudo actualizar el producto', error: error.message });

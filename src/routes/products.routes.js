@@ -1,10 +1,7 @@
-import express from "express"
-import { ProductManager } from '../functions/productManager.js';
-import { uploader } from "../utils.js";
-import { ProductModel } from "../models/products.model.js";
+import express from "express";
+import { ProductModel } from "../DAO/models/products.model.js";
+import { uploader } from "../utils/multer.js";
 export const productsRouter = express.Router()
-
-const productManager = new ProductManager('./src/data/data.json')
 
 //INICIO ENDPOINT PRODUCTS
 productsRouter.get('/:pid',async (req,res)=>{
@@ -15,7 +12,7 @@ productsRouter.get('/:pid',async (req,res)=>{
         if (productoEncontrado) {
             return res
             .status(201).
-            json({status:"success", msg:'Producto encontrado',data:productoEncontrado})
+            json({status:"success", msg:'Producto encontrado',payload:productoEncontrado})
         }
         else{
             return res
@@ -38,7 +35,7 @@ productsRouter.get('/', async (req,res)=>{
             let limitProd = await ProductModel.find({},{title:true,category:true}).limit(limit);
             return res
             .status(200).
-            json({status:"success", msg:'cantidad de productos limitada',data:limitProd})
+            json({status:"success", msg:'cantidad de productos limitada',payload:limitProd})
         }
         else if (limit>=allProducts.length) {
             return res
@@ -48,7 +45,7 @@ productsRouter.get('/', async (req,res)=>{
         else{
             return res
             .status(200).
-            json({status:"success", msg:'todos los productos',data:allProducts})
+            json({status:"success", msg:'todos los productos',payload:allProducts})
         }
     }
     catch (error) {
@@ -64,7 +61,7 @@ productsRouter.delete('/:pid', async(req,res)=>{
         const deletedProduct = await ProductModel.deleteOne({_id:pid})
         return res
         .status(200).
-        json({status:"success", msg:'producto eliminado',data:deletedProduct})
+        json({status:"success", msg:'producto eliminado',payload:deletedProduct})
     }
     catch (error) {
         return res.status(500).json({ status: 'error', msg: 'no se pudo eliminar el producto', error: error.message });
@@ -86,7 +83,7 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
         if (createdProduct) {
             return res
             .status(201).
-            json({status:"success", msg:'producto creado',data:createdProduct})
+            json({status:"success", msg:'producto creado',payload:createdProduct})
         }
         else{
             return res
@@ -121,12 +118,12 @@ productsRouter.put('/:pid',async (req,res)=>{
             console.log('Producto para actualizar no encontrado')
             return res
             .status(404)
-            .json({status:"error", msg:'Producto para actualizar no encontrado',data:{}})
+            .json({status:"error", msg:'Producto para actualizar no encontrado',payload:{}})
         }
 
         return res
         .status(200).
-        json({status:"success", msg:'producto modificado',data:updatedProduct})
+        json({status:"success", msg:'producto modificado',payload:updatedProduct})
     }
     catch (error) {
         return res.status(500).json({ status: 'error', msg: 'no se pudo actualizar el producto', error: error.message });

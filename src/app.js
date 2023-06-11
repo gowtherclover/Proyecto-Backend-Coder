@@ -6,7 +6,7 @@ import { cartsRouter } from "./routes/carts.routes.js";
 import { homeRouter } from "./routes/home.routes.js";
 import { productsRouter } from "./routes/products.routes.js";
 import { realTimeProductsRouter } from "./routes/realtimeproducts.routes.js";
-import { testChatRouter } from "./routes/test-chat.routes.js";
+import { ChatRouter } from "./routes/chat.routes.js";
 import { usersRouter } from "./routes/users.routes.js";
 import { connectMongo } from "./utils/dbConnection.js";
 import { connectSocketServer } from "./utils/socketServer.js";
@@ -33,7 +33,7 @@ app.set("view engine", "handlebars");
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", usersRouter);
-app.use("/test-chat", testChatRouter);
+app.use("/chat", ChatRouter);
 app.use("/home",homeRouter)
 app.use("/realtimeproducts",realTimeProductsRouter)
 

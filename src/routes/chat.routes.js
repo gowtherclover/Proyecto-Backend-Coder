@@ -1,10 +1,10 @@
 import express from 'express'
 import { ProductManager } from '../DAO/functions/productManager.js'
-export const testChatRouter = express.Router()
+export const ChatRouter = express.Router()
 
 const productManager = new ProductManager('./src/data/data.json')
 
-testChatRouter.get('/', (req,res)=>{
+ChatRouter.get('/', (req,res)=>{
     const allProd = productManager.getProducts()
-    return res.status(200).render("test-chat", {});
+    return res.status(200).render("chat", {});
 })

@@ -1,26 +1,22 @@
-<div>
-    CHAT DE PRUEBA
+<div class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+    <div class="text-2xl font-bold mb-4">
+        CHAT
+    </div>
+    <div class="bg-white p-8 shadow-md mb-3 min-[320px]:w-80 min-[425px]:w-[400px] min-[768]:w-[700px]">
+        <div id="div-msgs" class="border-2 border-red-500 p-4">
+            Loading...
+        </div>
+
+        <br>
+        <hr>
+
+        <h4>Ingrese un mensaje</h4>
+        <div>
+            <input id="input-msg" type="text" placeholder="Ingrese algo..." class="border border-gray-300 px-4 py-2 rounded-md">
+        </div>
+    </div>
 </div>
 
-<div id="div-msgs" class="border:1px solid red">
-    Loading...
-</div>
-
-<br>
-<hr >
-
-<h4>Ingrese un mensaje</h4>
-<div>
-    <input id="input-msg" type="text" placeholder=" ingrese algo...">
-</div>
-
-{{!-- <div>
-    Listo para trabjar con socket
-    <form>
-        <input type="text" id="messageInput">
-    </form>
-    <p id="messageParagraph"></p>
-</div> --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/chat.js"></script>

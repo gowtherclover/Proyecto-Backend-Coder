@@ -23,7 +23,7 @@ async function main() {
     emailIngresado = email;
     Swal.fire(`Your email is ${emailIngresado}`);
   } else {
-    Swal.fire(`email no ingresado`);
+    Swal.fire(`email not entered`);
   }
 }
 
@@ -44,7 +44,7 @@ socket.on("msg_back_front", (msgs) => {
 
   let formato = "";
   msgs.forEach((msg) => {
-    formato = formato + "<br>" + msg.user + ": " + msg.message;
+      formato = formato + `<br><div class="user__chat">${msg.user}</div>: ${msg.message}`;
   });
   divMSG.innerHTML = formato;
 });

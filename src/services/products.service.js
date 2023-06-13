@@ -85,6 +85,20 @@ class ProductsService{
             throw new Error("Unable to update the product");
         }
     }
+
+    async viewsProducts() {
+        try {
+            const views = await ProductModel.find({},{
+                path:false,
+                __v:false
+            }).lean()
+
+            return views;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Unable to find the product");
+        }
+    }
 }
 
 export const prodService = new ProductsService()

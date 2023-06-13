@@ -6,7 +6,6 @@ export const homeRouter = express.Router()
 homeRouter.get('/', async (req,res)=>{
     try{
         let allProducts = await prodService.viewsProducts()
-        console.log(allProducts);
         return res
         .status(200)
         .render('home',{allProducts})

@@ -31,8 +31,8 @@ export async function connectMongo() {
             let res = await StudentsModel.updateOne({ _id: '648261a9af6ae1b2daaa4821' }, student);
             console.log(res); */
 
-            let todosLosEstudiantes = await StudentsModel.find({_id:'648261a9af6ae1b2daaa4821'})/* .populate('courses.course') */
-            console.log(JSON.stringify(todosLosEstudiantes,null,2));
+            /* let todosLosEstudiantes = await StudentsModel.find({_id:'648261a9af6ae1b2daaa4821'}) *//* .populate('courses.course') */
+            /* console.log(JSON.stringify(todosLosEstudiantes,null,2)); */
 
             /* const created = CoursesModel.create({
             topics: ['software', 'python'],
@@ -71,6 +71,9 @@ export async function connectMongo() {
                 console.error('Error en insert many:', error);
             }
             })(); */
+
+            const res = await UserModel.paginate({},{limit:5, page:2})
+            console.log(res);
     } catch (e) {
         console.log(e);
         throw "can not connect to the db";

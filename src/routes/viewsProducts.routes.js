@@ -1,24 +1,29 @@
 import express from "express";
 import { prodService } from "../services/products.service.js";
 import { uploader } from "../utils/multer.js";
-export const productsRouter = express.Router()
+export const viewsProductsRouter = express.Router()
 
-productsRouter.get('/', async (req,res)=>{
+viewsProductsRouter.get('/', async (req,res)=>{
     try{
-        const { limit, sort, page, category, stock } = req.query;
+        const query = req.query
+        const limit = query.limit
+        let allProducts = await prodService.getAllProducts()
 
-        let parsedLimit = parseInt(limit);
-        let parsedPage = parseInt(page);
-
-        if (isNaN(parsedLimit) || parsedLimit <= 0) {
-            parsedLimit = 10;
+        if (limit<=allProducts.length) {
+            let limitProd = await prodService.getAllProducts(limit)
+            return res
+            .status(200).
+            json({status:"success", msg:'limited number of products',payload:limitProd})
         }
-
-        if (parsedLimit) {
-            let limitProd = await prodService.getAllProducts(req, parsedLimit, sort, parsedPage, category, stock);
-            return res.status(200).json({ status: "success", msg: 'limited number of products', payload: limitProd });
-        } else {
-            return res.status(400).json({ status: "error", msg: 'invalid limit parameter' });
+        else if (limit>=allProducts.length) {
+            return res
+            .status(400).
+            json({status:"error", msg:'the quantity requested is greater than the products available'})
+        }
+        else{
+            return res
+            .status(200).
+            json({status:"success", msg:'all the products',payload:allProducts})
         }
     }
     catch (error) {
@@ -28,7 +33,7 @@ productsRouter.get('/', async (req,res)=>{
     
 })
 
-productsRouter.get('/:pid',async (req,res)=>{
+viewsProductsRouter.get('/:pid',async (req,res)=>{
     try{
         const pid=req.params.pid
         const productFinder = await prodService.findOne(pid)
@@ -48,7 +53,7 @@ productsRouter.get('/:pid',async (req,res)=>{
     }
 })
 
-productsRouter.delete('/:pid', async(req,res)=>{
+viewsProductsRouter.delete('/:pid', async(req,res)=>{
     try{
         const pid=req.params.pid
         const deletedProduct = await prodService.delete(pid)
@@ -61,7 +66,7 @@ productsRouter.delete('/:pid', async(req,res)=>{
     }
 })
 
-productsRouter.post('/', uploader.single('file'), async (req,res)=>{
+viewsProductsRouter.post('/', uploader.single('file'), async (req,res)=>{
     try{
         if (!req.file) {
             return res
@@ -89,7 +94,7 @@ productsRouter.post('/', uploader.single('file'), async (req,res)=>{
     }
 })
 
-productsRouter.put('/:pid',async (req,res)=>{
+viewsProductsRouter.put('/:pid',async (req,res)=>{
     try{
         const pid=req.params.pid
         const {price,stock,status,...rest} = req.body

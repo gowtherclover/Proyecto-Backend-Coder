@@ -1,7 +1,7 @@
 import { ProductModel } from "../DAO/models/products.model.js"
 import { parse } from 'url';
 
-class ProductsService{
+class ViewsService{
     async getAllProducts(req, limit,sort,numberPage,category, stock) {
         try{
             let query = ProductModel.find({},{path: false, __v: false,});
@@ -16,11 +16,7 @@ class ProductsService{
                 query = query.find({ stock: stock });
             }
 
-            if (limit) {
-                const products = await query.limit(limit)
-            }else{
-                const products = await query
-            }
+            const products = await query.limit(limit)
 
             const pages = await ProductModel.paginate(query,{limit:3, page:numberPage || 1})
 
@@ -80,46 +76,6 @@ class ProductsService{
         }
     }
 
-    async delete(pid) {
-        try {
-            const productsDeleted = await ProductModel.deleteOne({ _id: pid });
-            return productsDeleted;
-        } catch (error) {
-            console.log(error);
-            throw new Error("Unable to delete the product");
-        }
-    }
-    
-    async create(product) {
-        try {
-            const createdProduct = await ProductModel.create(product);
-            return createdProduct;
-        } catch (error) {
-            console.log(error);
-            throw new Error("Unable to create the product");
-        }
-    }
-
-    async update({ pid, price, stock, status, rest }) {
-        try {
-            const updatedProduct = await ProductModel.findOneAndUpdate(
-                { _id: pid },
-                {
-                    $set: {
-                        price: Number(price),
-                        stock: Number(stock),
-                        status: status === 'available',
-                        ...rest
-                    }
-                }
-            );
-            return updatedProduct;
-        } catch (error) {
-            console.log(error);
-            throw new Error("Unable to update the product");
-        }
-    }
-
     async viewsProducts() {
         try {
             const views = await ProductModel.find({},{
@@ -135,4 +91,4 @@ class ProductsService{
     }
 }
 
-export const prodService = new ProductsService()
+export const viewService = new ViewsService()

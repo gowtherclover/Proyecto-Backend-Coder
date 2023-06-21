@@ -28,7 +28,7 @@ cartsRouter.get('/:cid', async (req, res) => {
 
         if (cartFound) {
             return res
-            .status(201)
+            .status(200)
             .json({ status: "success", msg: 'cart found', payload: cartFound });
         } else {
             return res
@@ -47,8 +47,8 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
         const pid = req.params.pid
         const productById= await prodService.findOne(pid)
 
-        if (productById) {
-            const createdProduct = await cartService.create({cid,pid})
+        if (productById.stock > 0) {
+            const createdProduct = await cartService.createProd({cid,pid})
             if (createdProduct) {
                 return res
                 .status(201).
@@ -71,4 +71,69 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
         return res.status(500).json({ status: 'error', msg: 'could not add product to cart', error: error.message });
     }
 })
+
+cartsRouter.post('/', async (req,res)=>{
+    try{
+        const newCart = await cartService.createCart()
+        return res
+        .status(201).
+        json({status:"success", msg:'new cart',payload:newCart})
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({ status: "error", msg: "Error creating cart" })
+    }
+    
+})
+
+cartsRouter.delete('/:cid/product/:pid', async (req,res)=>{
+    try{
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const productById= await prodService.findOne(pid)
+
+        if (productById) {
+            const deletedProduct = await cartService.deleteProd({cid,pid})
+            
+            if (deletedProduct) {
+                return res
+                .status(200).
+                json({status:"success", msg:'product removed from cart',payload:deletedProduct})
+            }
+            else{
+                return res
+                .status(400).
+                json({status:"error", msg:'The product was not removed from the cart'})
+            }
+        }
+        else{
+            return res
+                .status(400).
+                json({status:"error", msg:'No product found to remove from cart'})
+        }
+        
+    }
+    catch (error) {
+        return res.status(500).json({ status: 'error', msg: 'Could not remove product from cart', error: error.message });
+    }
+})
+
+cartsRouter.delete('/:cid', async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const cartToEmpty = await cartService.deleteCart({cid});
+        if (cartToEmpty) {
+            return res
+            .status(200)
+            .json({ status: "success", msg: 'cart removed', payload: cartToEmpty });
+        } else {
+            return res
+            .status(400)
+            .json({ status: "error", msg: 'The indicated cart was not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", msg: 'Internal Server Error' });
+    }
+});
 

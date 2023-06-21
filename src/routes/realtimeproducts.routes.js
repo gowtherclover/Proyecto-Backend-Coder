@@ -9,7 +9,7 @@ realTimeProductsRouter.get('/', (req,res)=>{
         .render('realtimeproducts', {})
     }
     catch (error) {
-        return res.status(500).json({ status: "error", msg: "Error al obtener los productos" })
+        return res.status(500).json({ status: "error", msg: "Error getting the products" })
     }
     
 })

@@ -6,6 +6,7 @@ import { cartsRouter } from "./routes/carts.routes.js";
 import { homeRouter } from "./routes/home.routes.js";
 import { productsRouter } from "./routes/products.routes.js";
 import { realTimeProductsRouter } from "./routes/realtimeproducts.routes.js";
+import { viewsRouter } from "./routes/views.routes.js";
 import { ChatRouter } from "./routes/chat.routes.js";
 import { usersRouter } from "./routes/users.routes.js";
 import { connectMongo } from "./utils/dbConnection.js";
@@ -36,6 +37,7 @@ app.use("/api/users", usersRouter);
 app.use("/chat", ChatRouter);
 app.use("/home",homeRouter)
 app.use("/realtimeproducts",realTimeProductsRouter)
+app.use("/views",viewsRouter)
 
 app.get("*", (req, res) => {
     return res

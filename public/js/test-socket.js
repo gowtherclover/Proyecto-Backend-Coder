@@ -160,7 +160,8 @@ async function getProducts(){
     }
 
     const prods = await prodResponse.json();
-    allProd= prods.payload
+
+    allProd= prods.payload.payload
 
     getIDs()
 
@@ -216,15 +217,14 @@ function prodSelection() {
 
 socket.on('prod_back_front', async (allProd) => {
   messageParagraph.innerHTML=""
-
   await allProd.allProd.forEach(el => {
     const {_id,title,description,price,code,stock,status,thumbnail,category} = el
-
+    
+    console.log(description);
     let div = document.createElement('div')
     div.innerHTML =`
             <div class='prods'>
                 <h5>${title.toUpperCase()}</h5>
-
                 <p>ID: ${_id}</p>
                 <p>Descripcion: ${description}</p>
                 <p>Precio: ${price}</p>

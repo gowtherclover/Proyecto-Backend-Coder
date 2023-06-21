@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { CartModel } from "../DAO/models/carts.model.js"
 
 class CartsService{
@@ -14,6 +15,7 @@ class CartsService{
     async findOne(cid) {
         try {
             const cartFinder = await CartModel.findOne({ _id: cid }, { __v: false });
+
             return cartFinder;
         } catch (error) {
             console.log(error);
@@ -21,12 +23,13 @@ class CartsService{
         }
     }
     
-    async create({ cid, pid }) {
+    async createProd({ cid, pid }) {
         try {
             const findProdInCart = await CartModel.findOne({ products: { $elemMatch: { pid: pid } } });
 
             if (findProdInCart) {
-                const productToUpdate = findProdInCart.products.find(product => product.pid === pid);
+                const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
+
                 if (productToUpdate) {
                     await CartModel.updateOne({_id:cid,"products.pid":pid},{$inc: { "products.$.quantity": 1 }})
                 }
@@ -43,6 +46,45 @@ class CartsService{
             }
     }
 
+    async createCart(){
+        const newCart = await CartModel.create({products: []});
+        return newCart
+    }
+
+    async deleteProd({ cid, pid }) {
+        try {
+            const findProdInCart = await CartModel.findOne({ products: { $elemMatch: { pid: pid } } });
+
+            if (findProdInCart) {
+                const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
+
+                if (productToUpdate.quantity > 1) {
+                    await CartModel.updateOne({_id:cid,"products.pid":pid},{$inc: { "products.$.quantity": -1 }})
+                }else {
+                    await CartModel.findOneAndUpdate({ _id: cid },{ $pull: { products: { pid: pid } } });
+                }
+            }
+            const updatedCart = await CartModel.findOne({ _id: cid });
+            return updatedCart; 
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            throw error;
+        }
+    }
+
+    async deleteCart({ cid }) {
+        try {
+            const updatedCart = await CartModel.findOneAndUpdate(
+                { _id: cid },
+                { products: [] },
+                { new: true }
+            );
+            return updatedCart;
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            throw error;
+        }
+    }
 
 }
 

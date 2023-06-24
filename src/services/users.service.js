@@ -1,3 +1,4 @@
+import { Long } from "mongodb";
 import { UserModel } from "../DAO/models/users.model.js";
 
 class UserService{
@@ -15,9 +16,25 @@ class UserService{
         return users
     }
 
-    async create({firstName, lastName, email}){
-        const userCreated = await UserModel.create({ firstName, lastName, email });
-        return userCreated
+    async create({ username, email, password }) {
+        try {
+            const findUser = await UserModel.findOne({
+                $or: [
+                    { username: username },
+                    { email: email }
+                ]
+            });
+
+            if (findUser) {
+                return false;
+            } else {
+                const userCreated = await UserModel.create({ username, email, password });
+                return userCreated;
+            }
+        } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+        }
     }
 
     async update({id, firstName, lastName, email}){

@@ -163,3 +163,11 @@ socket.on('viewCart_back_front', async (updateCart) => {
     totalCart.innerHTML = `$ ${total}`
 });
 
+function openModal() {
+    document.getElementById("modal").classList.remove("hidden");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+}
+

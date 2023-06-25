@@ -5,8 +5,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
 </head>
+
 <div class="login-card">
-    <h2>Inicio</h2>
-    <a class="link-auth" href="/api/sessions/login">Iniciar sesión</a>
-    <a class="link-auth" href="/api/sessions/register">Registrarse</a>
+    <a class="home" href="/"><span class="material-symbols-outlined">home</span></a>
+    <h2>Error</h2>
+    <h3>{{msg}}</h3>
+    <a class="link-auth" href="/api/sessions/{{path}}">Volver</a>
 </div>

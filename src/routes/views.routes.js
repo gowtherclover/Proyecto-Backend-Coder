@@ -1,10 +1,17 @@
 import express from "express";
 import { prodService } from "../services/products.service.js";
 import { cartService } from "../services/carts.service.js";
+import { userService } from "../services/users.service.js";
 export const viewsRouter = express.Router()
 
 viewsRouter.get('/products', async (req,res)=>{
     try{
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        const dataUser = await userService.getOne(req.session.user)
+        const {username,email,role} = dataUser
+
         const { limit, sort, page: pages, category, stock } = req.query;
         let parsedPage = parseInt(pages);
         let parsedLimit = parseInt(limit);
@@ -30,7 +37,7 @@ viewsRouter.get('/products', async (req,res)=>{
 
         return res
         .status(200)
-        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData})
+        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData,username,email})
     }
     catch (error) {
         console.log(error)

@@ -29,18 +29,20 @@ const httpServer = app.listen(PORT, () => {
 connectSocketServer(httpServer)
 app.use(cookieParser('4lg0s3cr3t0'));
 
-app.use(session({ 
-    secret: "asd3ñc30kasod" ,
-    resave:false,
-    saveUninitialized:true,
-
-    store: MongoStore.create({
-        mongoUrl: "mongodb+srv://96enzoaguilar:FWSadN7jvyazwmaC@backendcoder.uzv2r7b.mongodb.net/ecommerce?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true",
-        ttl: 15,
+app.use(
+    session({
+        store: MongoStore.create({
+            mongoUrl: "mongodb+srv://96enzoaguilar:FWSadN7jvyazwmaC@backendcoder.uzv2r7b.mongodb.net/ecommerce?retryWrites=true&w=majority",
+            ttl: 15 * 60,
+        }),
+        secret: "asd3ñc30kasod",
+        resave: true,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 15 * 60 * 1000,
+        },
     })
-}));
-
-
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

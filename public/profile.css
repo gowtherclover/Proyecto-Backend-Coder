@@ -1,0 +1,93 @@
+*{box-sizing:  border-box;}
+
+html,body{height: 100%;}
+
+@keyframes pan{
+    100% {background-position: 15% 50%;}
+}
+
+body{
+    margin: 0;
+    background: #3284ce;
+    font-family: 'Nunito Sans', sans-serif;
+    background-image: url('fondo-login.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation: pan 5s infinite alternate linear;
+}
+
+a{
+    border: 0;
+    width: 60%;
+    height: 60px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+}
+
+.login-card{
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 60%;
+    padding: 200px 90px; 
+    background: #111820;
+}
+.login-card h2{
+    margin: 0 0 30px;
+    color: rgb(255 255 255 /96%);
+}
+.login-card h3{
+    margin: 0 0 30px;
+    color: rgb(255 255 255 /40%);
+}
+.data{
+    margin: 0;
+    display: grid;
+    gap: 16px;
+}
+.textbox{
+    position: relative;
+    margin-bottom: 16px;
+}
+.textbox span{
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    left: 0;
+    font-size: 22px;
+    pointer-events: none;
+    color: rgb(255 255 255 /40%);
+    color: #216ce7;
+}
+
+.textbox p{
+    position: absolute;
+    top: 50%;
+    left: 36px;
+    translate: 0 -50%;
+    color: rgb(255 255 255 /40%);
+    pointer-events: none;
+    transition: 0.4s;
+    color: #216ce7;
+}
+
+a{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 0 24px;
+    border-radius: 6px;
+    background: #216ce7;
+    color: #f9f9f9;
+    border: 0;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+.login-card p {color: #778395;}
+.login-card p a{color: #216ce7;}

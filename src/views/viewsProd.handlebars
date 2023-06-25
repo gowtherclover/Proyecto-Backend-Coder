@@ -1,12 +1,19 @@
-
-<div class="bg-white">
-    <h2 class="text-2xl font-bold tracking-tight text-gray-900">Productos</h2>
-    <div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+<head>
+    <link rel="stylesheet" href="/view.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+<div class="bg-white flex flex-col h-full">
+    <div class="flex justify-between">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Productos</h2>
+        <p>¡Bienvenido {{username}}!</p>
+        <a href="/api/sessions/profile"><span class="material-symbols-outlined m-2">account_circle</span></a>
+    </div>
+    <div class="flex-1 mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div class=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-3 xl:gap-x-8">
             {{#each convertData}}
                 <div class="relative">
                     <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-80">
-                        <img src="{{this.thumbnail}}" alt="{{this.title}}" class="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                        <img src="{{this.thumbnail}}" alt="{{this.title}}" class="h-full w-full object-cover object-center">
                     </div>
                     <div class="mt-4 flex justify-between items-center">
                         <div class="flex-grow">

@@ -1,5 +1,29 @@
-<form action="/api/sessions/login" method="post">
-    <input type="text" name="username" placeholder="nombre de usuario">
-    <input type="password" name="password" placeholder="contraseña">
-    <button type="submit">Enviar</button>
-</form>
+<head>
+    <link rel="stylesheet" href="/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
+</head>
+
+<div class="login-card">
+    <a class="home" href="/"><span class="material-symbols-outlined">home</span></a>
+    <h2>Login</h2>
+    <h3>Ingrese sus credenciales</h3>
+    <form class="form" action="/api/sessions/login" method="post">
+        <div class="textbox">
+            <input type="text" name="username" required/>
+            <label>Nombre de usuario</label>
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="textbox">
+            <input type="password" name="password" required/>
+            <label>Contraseña</label>
+            <span class="material-symbols-outlined">key</span>
+        </div>
+        <p>
+            No tiene usuario?  <a href="/api/sessions/register">Registrese aqui</a>
+        </p>
+        <button type="submit">Enviar</button>
+    </form>
+</div>

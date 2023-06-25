@@ -1,0 +1,25 @@
+<head>
+    <link rel="stylesheet" href="/profile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
+</head>
+<div class="login-card">
+    <h2>Perfil</h2>
+    <div class="data" action="/api/sessions/register" method="post">
+        <div class="textbox">
+            <p>{{username}}</p>
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="textbox">
+            <p>{{email}}</p>
+            <span class="material-symbols-outlined">mail</span>
+        </div>
+        <div class="textbox">
+            <p>Carrito</p>
+            <span class="material-symbols-outlined">shopping_cart</span>
+        </div>
+        <a href="/views/products">Volver <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+</div>

@@ -10,6 +10,16 @@
     <h2>Registrate</h2>
     <form class="form" action="/api/sessions/register" method="post">
         <div class="textbox">
+            <input type="text" name="first_name" required/>
+            <label>Nombre</label>
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="textbox">
+            <input type="text" name="last_name" required/>
+            <label>Apellido</label>
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="textbox">
             <input type="text" name="username" required/>
             <label>Nombre de usuario</label>
             <span class="material-symbols-outlined">account_circle</span>
@@ -18,6 +28,11 @@
             <input type="email" name="email" required/>
             <label>Email</label>
             <span class="material-symbols-outlined">mail</span>
+        </div>
+        <div class="textbox">
+            <input type="text" name="age" required/>
+            <label>Edad</label>
+            <span class="material-symbols-outlined">account_circle</span>
         </div>
         <div class="textbox">
             <input type="password" name="password" required/>

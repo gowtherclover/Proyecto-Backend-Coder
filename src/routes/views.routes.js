@@ -4,13 +4,11 @@ import { cartService } from "../services/carts.service.js";
 import { userService } from "../services/users.service.js";
 export const viewsRouter = express.Router()
 
-viewsRouter.get('/products', async (req,res)=>{
+viewsRouter.get('/products',authenticate, async (req,res)=>{
     try{
-        if (!req.session.user) {
-            return res.redirect('/login');
-        }
         const dataUser = await userService.getOne(req.session.user)
-        const {username,email,role} = dataUser
+        const {first_name,role} = dataUser
+        const showRole = role==="admin"?role:null;
 
         const { limit, sort, page: pages, category, stock } = req.query;
         let parsedPage = parseInt(pages);
@@ -37,7 +35,7 @@ viewsRouter.get('/products', async (req,res)=>{
 
         return res
         .status(200)
-        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData,username,email})
+        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData,first_name,showRole})
     }
     catch (error) {
         console.log(error)
@@ -46,7 +44,7 @@ viewsRouter.get('/products', async (req,res)=>{
     
 })
 
-viewsRouter.get('/carts/:cid',async (req,res)=>{
+viewsRouter.get('/carts/:cid',authenticate,async (req,res)=>{
     try{
         const cid=req.params.cid
         let cartFinder = await cartService.findOne(cid)
@@ -80,3 +78,10 @@ viewsRouter.get('/carts/:cid',async (req,res)=>{
         return res.status(500).json({ status: 'error', msg: 'the cart could not be found', error: error.message });
     }
 })
+
+function authenticate(req, res, next) {
+    if (!req.session.user) {
+        return res.render('errorLogin',{msg:'Error authenticate'});
+    }
+    next()
+}

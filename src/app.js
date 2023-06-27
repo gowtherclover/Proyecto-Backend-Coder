@@ -52,21 +52,24 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use("/api/users", usersRouter);
+app.use("/api/products",authenticate, productsRouter);
+app.use("/api/carts",authenticate, cartsRouter);
+app.use("/api/users",authenticate, usersRouter);
 app.use("/chat", ChatRouter);
 app.use("/home",homeRouter)
-app.use("/realtimeproducts",realTimeProductsRouter)
+app.use("/realtimeproducts",authenticate,realTimeProductsRouter)
 app.use("/views",viewsRouter)
 app.use("/cookie",cookiesRouter)
 app.use("/api/sessions/",sessionsRouter)
-app.use("/",(req,res)=>{
-    res.render('index')
-})
+app.use("/",sessionsRouter)
+
+function authenticate(req, res, next) {
+    if (!req.session.user) {
+        return res.render('errorLogin',{msg:'Error authenticate'});
+    }
+    next()
+}
 
 app.get("*", (req, res) => {
-    return res
-    .status(404)
-    .json({ status: "error", msg: "no se encuentra esa ruta", payload: {} });
+    return res.render('errorLogin',{msg:'Error link'});
 });

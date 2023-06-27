@@ -10,5 +10,7 @@
     <a class="home" href="/"><span class="material-symbols-outlined">home</span></a>
     <h2>Error</h2>
     <h3>{{msg}}</h3>
-    <a class="link-auth" href="/api/sessions/{{path}}">Volver</a>
+    {{#if path}}
+        <a class="link-auth" href="/api/sessions/{{path}}">Volver</a>
+    {{/if}}
 </div>

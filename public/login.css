@@ -82,6 +82,10 @@ button,input{
     background: #216ce7;
     color: #f9f9f9;
     font-weight: 600;
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    justify-content: center;
 }
 
 .textbox{

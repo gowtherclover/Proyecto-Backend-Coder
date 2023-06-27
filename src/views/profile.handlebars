@@ -13,13 +13,24 @@
             <span class="material-symbols-outlined">account_circle</span>
         </div>
         <div class="textbox">
+            <p>{{first_name}} {{last_name}}</p>
+            <span class="material-symbols-outlined">badge</span>
+        </div>
+        <div class="textbox">
+            <p>Edad: {{age}}</p>
+            <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="textbox">
             <p>{{email}}</p>
             <span class="material-symbols-outlined">mail</span>
         </div>
         <div class="textbox">
-            <p>Carrito</p>
-            <span class="material-symbols-outlined">shopping_cart</span>
+            <p>rol: {{role}}</p>
+            <span class="material-symbols-outlined">settings_accessibility</span>
         </div>
-        <a href="/views/products">Volver <span class="material-symbols-outlined">arrow_forward</span></a>
+
+        <a href="/views/products" style="text-decoration: none;">Volver <span class="material-symbols-outlined">arrow_forward</span></a>
+        
+        <a href="/api/sessions/logout" >Cerrar sesion <span class="material-symbols-outlined">logout</span></a>
     </div>
 </div>

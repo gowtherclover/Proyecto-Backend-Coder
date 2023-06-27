@@ -1,12 +1,20 @@
 <head>
     <link rel="stylesheet" href="/view.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"/>
 </head>
 <div class="bg-white flex flex-col h-full">
     <div class="flex justify-between">
         <h2 class="text-2xl font-bold tracking-tight text-gray-900">Productos</h2>
-        <p>¡Bienvenido {{username}}!</p>
-        <a href="/api/sessions/profile"><span class="material-symbols-outlined m-2">account_circle</span></a>
+        <div class="flex text-center">
+            <p>¡Bienvenido {{first_name}}!</p>
+            {{#if showRole}}
+                <p>Usted es {{showRole}}</p>
+            {{/if}}
+        </div>
+        <div>
+            <a href="/api/sessions/profile"><span class="material-symbols-outlined m-2">account_circle</span></a>
+            <a href="/views/carts/6490a2f0afa56fc505b2ea74"><span class="material-symbols-outlined">shopping_cart</span></a>
+        </div>
     </div>
     <div class="flex-1 mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div class=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-3 xl:gap-x-8">
@@ -29,9 +37,9 @@
                             <p data-product-id="{{this._id}}" class="stockQuantity text-sm font-medium text-gray-900 pr-3 mt-auto">stock: {{this.stock}}</p>
                         </div>
                     </div>
-                        <button value="{{this._id}}" class="addToCart bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded flex-shrink-0 mt-2">
-                            Agregar al carrito
-                        </button>
+                    <button value="{{this._id}}" class="addToCart bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded flex-shrink-0 mt-2">
+                        Agregar al carrito
+                    </button>
                 </div>
             {{/each}}
         </div>
@@ -73,4 +81,4 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/views.js"></script>
+<script src="/views.js"></script>

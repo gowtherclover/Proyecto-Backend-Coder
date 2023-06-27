@@ -1,13 +1,22 @@
-import { Long } from "mongodb";
 import { UserModel } from "../DAO/models/users.model.js";
 
 class UserService{
+    async getAll() {
+        try {
+            let allUsers = await UserModel.find({}, { __v: false });
+            return allUsers;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Unable to get all users");
+        }
+    }
+
     async getOne(username){
         const users = await UserModel.findOne({username:username},{password:false,__v:false});
         return users
     }
 
-    async create({ username, email, password }) {
+    async create({ first_name,last_name,username, email,age, password }) {
         try {
             const findUser = await UserModel.findOne({
                 $or: [
@@ -19,7 +28,7 @@ class UserService{
             if (findUser) {
                 return false;
             } else {
-                const userCreated = await UserModel.create({ username, email, password });
+                const userCreated = await UserModel.create({ first_name,last_name,username, email,age, password });
                 return userCreated;
             }
         } catch (error) {

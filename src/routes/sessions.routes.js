@@ -2,16 +2,35 @@ import express from "express";
 import { userService } from "../services/users.service.js";
 export const sessionsRouter = express.Router()
 
-sessionsRouter.get('/login', (req,res)=>{
+sessionsRouter.get('/', async (req,res)=>{
+    try{
+        if (req.session.user) {
+            const dataUser = await userService.getOne(req.session.user)
+            const {first_name} = dataUser
+            const existUser = true
+
+            return res.render('index',{existUser,first_name})
+        }else{
+            return res.render('index')
+        }
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({ status: "error", msg: error })
+    }
+})
+
+sessionsRouter.get('/login', async (req,res)=>{
     try{
         return res.render('login')
     }
     catch (error) {
         console.log(error)
-        return res.status(500).json({ status: "error", msg: "Error getting the products" })
+        return res.status(500).json({ status: "error", msg: error })
     }
     
 })
+
 
 sessionsRouter.post('/login', async (req, res) => {
     try {
@@ -44,10 +63,11 @@ sessionsRouter.get('/register', (req,res)=>{
 
 sessionsRouter.post('/register', async (req,res)=>{
     try{
-        const {username,email,password} = req.body
-        const newUser = await userService.create({username,email,password})
+        const {first_name,last_name,username, email,age, password} = req.body
+        const newUser = await userService.create({first_name,last_name,username, email,age, password})
 
         if (newUser) {
+            req.session.user = username;
             return res.redirect('/views/products')
         }else{
             const path = req.path
@@ -60,24 +80,31 @@ sessionsRouter.post('/register', async (req,res)=>{
     }
 })
 
-sessionsRouter.get('/logout', (req, res) => {
+sessionsRouter.get('/logout',authenticate, (req, res) => {
     req.session.destroy(err => {
         if (err) {
         return res.json({ status: 'Logout ERROR', body: err })
         }
-        res.send('Logout ok!')
+        return res.redirect('/login');
     })
 })
 
-sessionsRouter.get('/profile',async (req,res)=>{
+sessionsRouter.get('/profile',authenticate,async (req,res)=>{
     try{
         const dataUser = await userService.getOne(req.session.user)
-        const {username,email,role} = dataUser
+        const {first_name,last_name,username, email,age,role} = dataUser
 
-        return res.render('profile',{username,email,role})
+        return res.render('profile',{first_name,last_name,username, email,age,role})
     }
     catch (error) {
         console.log(error)
         return res.status(500).json({ status: "error", msg: error })
     }
 })
+
+function authenticate(req, res, next) {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    next()
+}

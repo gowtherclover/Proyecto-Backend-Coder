@@ -6,7 +6,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
 </head>
 <div class="login-card">
-    <h2>Inicio</h2>
-    <a class="link-auth" href="/api/sessions/login">Iniciar sesión</a>
-    <a class="link-auth" href="/api/sessions/register">Registrarse</a>
+    <h2 class="mb-8">Inicio</h2>
+    {{#if existUser}}
+        <div>
+            <p class="mb-8">¡Bienvenido {{first_name}}!</p>
+            <a class="link-auth" href="/views/products">Ver productos</a>
+            <a class="link-auth" href="/api/sessions/logout">Cerrar sesion</a>
+        </div>
+    {{else}}
+        <a class="link-auth" href="/api/sessions/login">Iniciar sesión</a>
+        <a class="link-auth" href="/api/sessions/register">Registrarse</a>
+    {{/if}}
 </div>

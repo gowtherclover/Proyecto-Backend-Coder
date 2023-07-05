@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { MessagesModel } from "../DAO/models/messages.model.js";
 import { ProductModel } from "../DAO/models/products.model.js";
 import { CartModel } from "../DAO/models/carts.model.js";
+import { cartService } from "../services/carts.service.js";
 
 export function connectSocketServer(httpServer ){
     const socketServer = new Server(httpServer);
@@ -38,9 +39,12 @@ export function connectSocketServer(httpServer ){
     })
     
     socketServer.on('connection', (socket) => {
-        socket.on('viewCart_front_back', async (cartId) => {
-            const updateCart = await CartModel.findOne({ _id: cartId.cid }, { __v: false });
-            socketServer.emit('viewCart_back_front', updateCart.products);
+        socket.on('viewCart_front_back', async (IDs) => {
+            const updateCart = await CartModel.findOne({ _id: IDs.cid }, { __v: false });
+
+            const existsInCart = !updateCart.products.some((data) => data.pid._id.toString() === IDs.pid);
+
+            socketServer.emit('viewCart_back_front', updateCart.products,IDs,existsInCart);
         });
     })
 
@@ -51,8 +55,9 @@ export function connectSocketServer(httpServer ){
     })
 
     socketServer.on('connection', (socket) => {
-        socket.on('decreaseCart_front_back', async (productId) => {
-            await ProductModel.updateOne({ _id: productId.pid }, { $inc: { stock: +1 } });
+        socket.on('decreaseCart_front_back', async (IDs) => {
+            await ProductModel.updateOne({ _id: IDs.pid }, { $inc: { stock: +1 } });
+            await cartService.deleteProd(IDs.cid,IDs.pid)
         });
     })
 }

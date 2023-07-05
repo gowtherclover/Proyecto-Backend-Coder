@@ -18,8 +18,9 @@ body{
     padding: 0 24px;
     background-image: url('fondo-login.svg');
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size:cover;
     animation: pan 5s infinite alternate linear;
+    height: 100vh;
 }
 
 button,input{
@@ -143,6 +144,19 @@ input:valid ~ label {
 }
 
 .home span:hover {
+transform: scale(1.1);
+}
+
+.github span {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 30px;
+    color: rgba(0, 0, 0, 0.96);
+    transition: transform 0.3s ease-in-out;
+}
+
+.github span:hover {
 transform: scale(1.1);
 }
 

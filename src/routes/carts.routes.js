@@ -49,6 +49,7 @@ cartsRouter.post('/:cid/product/:pid', async (req,res)=>{
 
         if (productById.stock > 0) {
             const createdProduct = await cartService.createProd({cid,pid})
+
             if (createdProduct) {
                 return res
                 .status(201).

@@ -6,8 +6,8 @@ export const viewsRouter = express.Router()
 
 viewsRouter.get('/products',authenticate, async (req,res)=>{
     try{
-        const dataUser = await userService.getOne(req.session.user)
-        const {first_name,role} = dataUser
+        const dataUser = await userService.getOne(req.session.user.username)
+        const {first_name,role,cart_ID} = dataUser
         const showRole = role==="admin"?role:null;
 
         const { limit, sort, page: pages, category, stock } = req.query;
@@ -35,7 +35,7 @@ viewsRouter.get('/products',authenticate, async (req,res)=>{
 
         return res
         .status(200)
-        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData,first_name,showRole})
+        .render('viewsProd', {hasPrevPage,page,totalPages,hasNextPage,nextLink,prevLink,convertData,first_name,showRole,cart_ID})
     }
     catch (error) {
         console.log(error)
@@ -66,7 +66,7 @@ viewsRouter.get('/carts/:cid',authenticate,async (req,res)=>{
                     quantity:item.quantity
                 };
             });
-            return res.status(200).render('viewsCarts',{cartFinder,total})
+            return res.status(200).render('viewsCarts',{cartFinder,total,cid})
         }
         else{
             return res

@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { CartModel } from "../DAO/models/carts.model.js"
+import { ProductModel } from "../DAO/models/products.model.js";
 
 class CartsService{
     async getAllCarts() {
@@ -25,11 +26,10 @@ class CartsService{
     
     async createProd({ cid, pid }) {
         try {
-            const findProdInCart = await CartModel.findOne({ products: { $elemMatch: { pid: pid } } });
-
+            const findProdInCart = await CartModel.findOne({_id:cid, products: { $elemMatch: { pid: pid } } });
             if (findProdInCart) {
                 const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
-
+                
                 if (productToUpdate) {
                     await CartModel.updateOne({_id:cid,"products.pid":pid},{$inc: { "products.$.quantity": 1 }})
                 }
@@ -53,7 +53,7 @@ class CartsService{
 
     async deleteProd({ cid, pid }) {
         try {
-            const findProdInCart = await CartModel.findOne({ products: { $elemMatch: { pid: pid } } });
+            const findProdInCart = await CartModel.findOne({_id:cid, products: { $elemMatch: { pid: pid } } });
 
             if (findProdInCart) {
                 const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
@@ -74,6 +74,15 @@ class CartsService{
 
     async deleteCart({ cid }) {
         try {
+            const cart = await CartModel.findOne({ _id: cid });
+
+            cart.products.forEach(async (product) => {
+
+                const pid = product.pid._id;
+                const quantity = product.quantity;
+
+                await ProductModel.updateOne({ _id: pid }, { $inc: { stock: quantity } });
+            });
             const updatedCart = await CartModel.findOneAndUpdate(
                 { _id: cid },
                 { products: [] },

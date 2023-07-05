@@ -3,11 +3,13 @@ const socket = io();
 const addToCartButtons = document.getElementsByClassName('addToCart');
 const stockQuantity = document.getElementsByClassName('stockQuantity');
 let clickedButton = null;
+const divProducts = document.getElementById('productsInCart')
 const divId = document.getElementsByClassName('divId')
-const quantityCart = document.getElementsByClassName('quantityCart')
-const totalCart = document.getElementById('totalCart')
+const quantityCart = document.querySelectorAll('.quantityCart')
+const totalElement = document.querySelectorAll ('[total-id]');
 const emptyCart = document.getElementById('emptyCart')
 const buy = document.getElementById('buy')
+const cid = window.cid;
 
 Array.from(addToCartButtons).forEach((button) => {
     button.addEventListener('click', (event) => {
@@ -16,7 +18,6 @@ Array.from(addToCartButtons).forEach((button) => {
         addToCart(pid)
     });
 })
-const cid = '6490a2f0afa56fc505b2ea74';
 
 if (emptyCart) {
     emptyCart.addEventListener('click', () => {
@@ -50,7 +51,7 @@ async function addToCart(pid) {
     }
 }
 
-async function increaseQuantity(pid) {
+async function increaseQuantity(pid,cid) {
     try {
 
         const response = await fetch(`/api/carts/${cid}/product/${pid}`, {
@@ -65,14 +66,14 @@ async function increaseQuantity(pid) {
             pid: pid
         });
 
-        refreshCart(cid)
+        refreshCart(cid,pid)
 
     } catch (error) {
         console.error('Error adding product:', error);
     }
 }
 
-async function decreaseQuantity(pid){
+async function decreaseQuantity(pid,cid){
     try {
         const response = await fetch(`/api/carts/${cid}/product/${pid}`, {
             method: 'DELETE'
@@ -83,10 +84,11 @@ async function decreaseQuantity(pid){
         }
 
         socket.emit('decreaseCart_front_back', {
+            cid:cid,
             pid: pid
         });
 
-        refreshCart(cid)
+        refreshCart(cid,pid)
 
     } catch (error) {
         console.error('Error deleting product:', error);
@@ -110,9 +112,10 @@ async function deleteCart(){
     }
 }
 
-async function refreshCart(cid){
+async function refreshCart(cid,pid){
     socket.emit('viewCart_front_back', {
-        cid: cid
+        cid: cid,
+        pid: pid
     });
     
 }
@@ -123,44 +126,60 @@ socket.on('viewProd_back_front', async (product) => {
 
         if (productId == product._id) {
             element.innerHTML=`stock: ${product.stock}`
-            clickedButton.disabled = (product.stock === 0)
+            if (product.stock === 0) {
+                clickedButton.disabled = true
+            }
         }
     })
 });
 
-socket.on('viewCart_back_front', async (updateCart) => {
+socket.on('viewCart_back_front', async (updateCart,IDs,existsInCart) => {
     let total = 0
-    Array.from(quantityCart).forEach((element) => {
-        const productId = element.getAttribute('data-product-id')
 
-        updateCart.forEach((data)=>{
-            
-            if (productId == data.pid._id) {
-                element.innerHTML=`Cantidad: ${data.quantity}`;
-
-            }
-        })
-    })
-
-    Array.from(divId).forEach((element) => {
-        const blockProd = element.getAttribute('div-id')
-        let existsInCart = false;
-
-        updateCart.forEach((data)=>{
-            if (blockProd == data.pid._id) {
-                existsInCart = true;
-            }
-        })
-
-        if (!existsInCart) {
-            element.remove();
+    if (updateCart.length !== 0) {
+        const productId = IDs.pid;
+        const quantityCartId = `${productId}+${IDs.cid}`;
+        
+        const quantityElement = document.querySelector(`[data-product-id="${quantityCartId}"]`);
+    
+        if (quantityElement) {
+            updateCart.forEach((data)=>{
+    
+                if (data.pid._id == IDs.pid) {
+                    quantityElement.innerHTML = `Cantidad: ${data.quantity}`;
+                }
+                
+                total =total + ( data.pid.price * data.quantity )
+            })
+            totalElement.forEach((element) =>{
+                let totalId = element.getAttribute('total-id')
+        
+                if (totalId == IDs.cid) {
+                    element.innerHTML=''
+                    element.innerHTML = `$ ${total}`            
+                }
+                
+            })
         }
-    })
-
-    updateCart.forEach((data)=>{
-        total =total + ( data.pid.price * data.quantity )
-    })
-    totalCart.innerHTML = `$ ${total}`
+    
+        const divElement = document.querySelector(`[div-id="${quantityCartId}"]`);
+    
+        if (existsInCart) {
+            console.log('se borrara');
+            divElement.remove();
+        }
+    }else{
+        divProducts.innerHTML = '';
+        totalElement.forEach((element) =>{
+            let totalId = element.getAttribute('total-id')
+    
+            if (totalId == IDs.cid) {
+                element.innerHTML=''
+                element.innerHTML = `$ ${total}`            
+            }
+            
+        })
+    }
 });
 
 function openModal() {

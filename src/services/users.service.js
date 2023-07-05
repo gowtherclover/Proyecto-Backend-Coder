@@ -1,4 +1,5 @@
 import { UserModel } from "../DAO/models/users.model.js";
+import { createHash, isValidPassword } from "../utils/hash.js";
 
 class UserService{
     async getAll() {
@@ -28,7 +29,7 @@ class UserService{
             if (findUser) {
                 return false;
             } else {
-                const userCreated = await UserModel.create({ first_name,last_name,username, email,age, password });
+                const userCreated = await UserModel.create({ first_name,last_name,username, email,age, password:createHash(password) });
                 return userCreated;
             }
         } catch (error) {
@@ -52,11 +53,11 @@ class UserService{
 
     async authenticate(username, password) {
         try {
-            const user = await UserModel.findOne({ username: username, password: password });
-            if (!user) {
-                return false;
-            } else {
+            const user = await UserModel.findOne({ username: username});
+            if (user && isValidPassword(password,user.password)) {
                 return true;
+            } else {
+                return false;
             }
         } catch (error) {
             console.error('Error authenticating user:', error);

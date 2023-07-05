@@ -16,6 +16,10 @@ import { sessionsRouter } from "./routes/sessions.routes.js";
 import { connectMongo } from "./utils/dbConnection.js";
 import { connectSocketServer } from "./utils/socketServer.js";
 import MongoStore from 'connect-mongo';
+import { iniPassport } from './config/passport.config.js';
+import passport from 'passport';
+import { env } from './config/env.js';
+
 
 const app = express();
 const PORT = 8080;
@@ -32,7 +36,7 @@ app.use(cookieParser('4lg0s3cr3t0'));
 app.use(
     session({
         store: MongoStore.create({
-            mongoUrl: "mongodb+srv://96enzoaguilar:FWSadN7jvyazwmaC@backendcoder.uzv2r7b.mongodb.net/ecommerce?retryWrites=true&w=majority",
+            mongoUrl: env.MONGO_URL,
             ttl: 15 * 60,
         }),
         secret: "asd3ñc30kasod",
@@ -43,6 +47,10 @@ app.use(
         },
     })
 );
+
+iniPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

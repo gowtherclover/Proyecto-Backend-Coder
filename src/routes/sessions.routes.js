@@ -54,7 +54,7 @@ sessionsRouter.get('/register', (req,res)=>{
     
 })
 
-sessionsRouter.post('/register', passport.authenticate('register', { failureRedirect: '/error?msg=Username%or%mail%already%exists' }), (req,res)=>{
+sessionsRouter.post('/register', passport.authenticate('register', { failureRedirect: '/error?msg=Username%20or%20mail%20already%20exists' }), (req,res)=>{
     try{
         req.session.user = { _id: req.user._id, username: req.user.username, email: req.user.email, first_name: req.user.first_name, last_name: req.user.last_name, role: req.user.role,cart_ID:req.user.cart_ID };
         return res.redirect('/views/products');
@@ -89,7 +89,7 @@ sessionsRouter.get('/profile',authenticate,async (req,res)=>{
 
 sessionsRouter.get('/github',passport.authenticate('github',{scope: ['user:email']}))
 
-sessionsRouter.get('/githubcallback',passport.authenticate('github',{failureRedirect:'/error?msg=Username%or%mail%already%exists'}), (req,res)=>{
+sessionsRouter.get('/githubcallback',passport.authenticate('github',{failureRedirect:'/error?msg=Username%20or%20mail%20already%20exists'}), (req,res)=>{
     try{
         req.session.user = { _id: req.user._id, username: req.user.username, email: req.user.email, first_name: req.user.first_name, last_name: req.user.last_name, role: req.user.role,cart_ID:req.user.cart_ID };
         return res.redirect('/views/products');

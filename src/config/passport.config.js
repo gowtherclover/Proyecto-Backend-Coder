@@ -3,9 +3,9 @@ import passport from "passport";
 import GitHubStrategy from 'passport-github2';
 import local from "passport-local";
 import { UserModel } from "../DAO/models/users.model.js";
-import { createHash, isValidPassword } from "../utils/hash.js";
+import { isValidPassword } from "../utils/hash.js";
 import { env } from './env.js';
-import { CartModel } from '../DAO/models/carts.model.js';
+import { userService } from '../services/users.service.js';
 const LocalStrategy = local.Strategy;
 
 export function iniPassport() {
@@ -40,23 +40,20 @@ export function iniPassport() {
             async (req,username,password,done) => {
                 try {
                     const { age, email, first_name, last_name } = req.body;
-                    let user = await UserModel.findOne({ username: username });
-                    const newCart= await CartModel.create({products: []});
+                    let user = await userService.getOne(username);
                     if (user) {
                         console.log("User already exists");
                         return done(null, false);
                     }
 
-                    const newUser = {
+                    let userCreated = await userService.create({
                         first_name,
                         last_name,
                         username,
                         email,
                         age,
-                        password: createHash(password),
-                        cart_ID: newCart._id,
-                    };
-                    let userCreated = await UserModel.create(newUser);
+                        password
+                        });
                     console.log("User Registration succesful");
                     return done(null, userCreated);
                 } catch (e) {
@@ -92,20 +89,17 @@ export function iniPassport() {
                         return done(new Error('cannot get a valid email for this user'));
                     }
                     profile.email = emailDetail.email;
-
+                    console.log(profile);
                     let user = await UserModel.findOne({ email: profile.email });
-                    const newCart= await CartModel.create({products: []});
                     if (!user) {
-                        const newUser = {
+                        let userCreated = await userService.create({
                             first_name: profile.displayName || 'noname',
                             last_name: 'nolast',
                             username:profile.username,
                             email: profile.email,
                             age:'noage',
                             password: 'nopass',
-                            cart_ID: newCart._id,
-                        };
-                        let userCreated = await UserModel.create(newUser);
+                            });
                         console.log('User Registration succesful');
                         return done(null, userCreated);
                     } else {

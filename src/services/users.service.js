@@ -1,3 +1,4 @@
+import { CartModel } from "../DAO/models/carts.model.js";
 import { UserModel } from "../DAO/models/users.model.js";
 import { createHash, isValidPassword } from "../utils/hash.js";
 
@@ -29,7 +30,16 @@ class UserService{
             if (findUser) {
                 return false;
             } else {
-                const userCreated = await UserModel.create({ first_name,last_name,username, email,age, password:createHash(password) });
+                const newCart= await CartModel.create({products: []});
+
+                const userCreated = await UserModel.create({ 
+                    first_name,
+                    last_name,
+                    username,
+                    email,
+                    age,
+                    password:createHash(password),
+                    cart_ID: newCart._id });
                 return userCreated;
             }
         } catch (error) {

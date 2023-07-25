@@ -19,10 +19,11 @@ class ProductsService{
 
             if (limit) {
                 query = query.limit(limit)
-            }
+            } 
+            const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
 
             /* let query = productsModel.getAllProducts()
-
+            
             if (sort) {
                 query = query.sort({ price: sort })
             }
@@ -32,14 +33,13 @@ class ProductsService{
             } else if (stock) {
                 query = query.find({ stock: stock });
             }
-
+            
             if (limit) {
                 query = query.limit(limit)
             }
-
+            
             const pages = await productsModel.paginate(query,numberPage) */
 
-            const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
 
             const { docs, totalPages, page, hasPrevPage, hasNextPage, prevPage, nextPage } = pages;
 

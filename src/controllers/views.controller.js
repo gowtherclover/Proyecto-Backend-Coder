@@ -1,7 +1,5 @@
 import { cartService } from "../services/carts.service.js";
 import { prodService } from "../services/products.service.js";
-
-
 class ViewsController{
     getProducts = async (req,res) =>{
         try{

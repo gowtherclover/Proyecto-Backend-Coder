@@ -8,7 +8,6 @@ sessionsRouter.get('/', sessionsController.get)
 
 sessionsRouter.get('/login', sessionsController.getLogin)
 
-
 sessionsRouter.post('/login', passport.authenticate('login', { failureRedirect: '/error?msg=Incorrect%20username%20or%20password' }), sessionsController.postLogin);
 
 sessionsRouter.get('/register', sessionsController.getRegister)

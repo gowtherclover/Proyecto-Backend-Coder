@@ -10,7 +10,7 @@ class ProductsModel{
         }
     }
 
-/*     async paginate(query,numberPage) {
+    async paginate({query,numberPage}) {
         try{
             console.log(query);
             const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
@@ -19,7 +19,7 @@ class ProductsModel{
             console.log(error);
             throw new Error("Unable to get products");
         }
-    } */
+    }
 
     async findOne(pid) {
         try {

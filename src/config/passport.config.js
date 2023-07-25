@@ -2,10 +2,11 @@ import fetch from 'node-fetch';
 import passport from "passport";
 import GitHubStrategy from 'passport-github2';
 import local from "passport-local";
-import { UserModel } from "../DAO/models/users.model.js";
+import { userModel } from "../DAO/models/users.model.js";
 import { isValidPassword } from "../utils/hash.js";
 import { env } from './env.js';
 import { userService } from '../services/users.service.js';
+import { MongooseUserModel } from '../DAO/models/mongoose/users.mongoose.js';
 const LocalStrategy = local.Strategy;
 
 export function iniPassport() {
@@ -14,7 +15,7 @@ export function iniPassport() {
         new LocalStrategy(
             async (username, password, done) => {
                 try {
-                    const user = await UserModel.findOne({ username: username });
+                    const user = await userService.getOne(username);
                     if (!user) {
                         console.log("User Not Found with username " + username);
                         return done(null, false);
@@ -89,8 +90,8 @@ export function iniPassport() {
                         return done(new Error('cannot get a valid email for this user'));
                     }
                     profile.email = emailDetail.email;
-                    console.log(profile);
-                    let user = await UserModel.findOne({ email: profile.email });
+
+                    let user = await userService.getOne(profile.username);
                     if (!user) {
                         let userCreated = await userService.create({
                             first_name: profile.displayName || 'noname',
@@ -120,7 +121,7 @@ export function iniPassport() {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let user = await UserModel.findById(id);
+        let user = await MongooseUserModel.findById(id);
         done(null, user);
     });
 }

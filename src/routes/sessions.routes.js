@@ -6,11 +6,11 @@ export const sessionsRouter = express.Router()
 sessionsRouter.get('/', async (req,res)=>{
     try{
         if (req.session.user) {
-            const dataUser = await userService.getOne(req.session.user.username)
-            const {first_name} = dataUser
+            const dataUser = req.session.user
+            const {username} = dataUser
             const existUser = true
 
-            return res.render('index',{existUser,first_name})
+            return res.render('index',{existUser,username})
         }else{
             return res.render('index')
         }
@@ -85,7 +85,6 @@ sessionsRouter.get('/logout',authenticate, (req, res) => {
 sessionsRouter.get('/current',authenticate,async (req,res)=>{
     try{
         const dataUser = req.session.user
-        console.log(req.session.user);
         const {first_name,last_name,username, email,age,role} = dataUser
 
         return res.render('profile',{first_name,last_name,username, email,age,role})

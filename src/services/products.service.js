@@ -1,10 +1,11 @@
-import { ProductModel } from "../DAO/models/products.model.js"
+import { MongooseProductModel } from "../DAO/models/mongoose/products.mongoose.js";
+import { productsModel } from "../DAO/models/products.model.js"
 import { parse } from 'url';
 
 class ProductsService{
     async getAllProducts(req, limit,sort,numberPage,category, stock) {
         try{
-            let query = ProductModel.find({},{path: false, __v: false,});
+            let query = MongooseProductModel.find({},{path: false, __v: false,});
 
             if (sort) {
                 query = query.sort({ price: sort })
@@ -17,12 +18,28 @@ class ProductsService{
             }
 
             if (limit) {
-                const products = await query.limit(limit)
-            }else{
-                const products = await query
+                query = query.limit(limit)
             }
 
-            const pages = await ProductModel.paginate(query,{limit:3, page:numberPage || 1})
+            /* let query = productsModel.getAllProducts()
+
+            if (sort) {
+                query = query.sort({ price: sort })
+            }
+
+            if (category) {
+                query = query.find({ category: category });
+            } else if (stock) {
+                query = query.find({ stock: stock });
+            }
+
+            if (limit) {
+                query = query.limit(limit)
+            }
+
+            const pages = await productsModel.paginate(query,numberPage) */
+
+            const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
 
             const { docs, totalPages, page, hasPrevPage, hasNextPage, prevPage, nextPage } = pages;
 
@@ -66,13 +83,7 @@ class ProductsService{
 
     async findOne(pid) {
         try {
-            const productFinder = await ProductModel.findOne(
-                { _id: pid },
-                {
-                path: false,
-                __v: false,
-                }
-            );
+            const productFinder = await productsModel.findOne(pid);
             return productFinder;
         } catch (error) {
             console.log(error);
@@ -82,7 +93,7 @@ class ProductsService{
 
     async delete(pid) {
         try {
-            const productsDeleted = await ProductModel.deleteOne({ _id: pid });
+            const productsDeleted = await productsModel.deleteOne(pid);
             return productsDeleted;
         } catch (error) {
             console.log(error);
@@ -92,7 +103,7 @@ class ProductsService{
     
     async create(product) {
         try {
-            const createdProduct = await ProductModel.create(product);
+            const createdProduct = await productsModel.create(product);
             return createdProduct;
         } catch (error) {
             console.log(error);
@@ -102,17 +113,7 @@ class ProductsService{
 
     async update({ pid, price, stock, status, rest }) {
         try {
-            const updatedProduct = await ProductModel.findOneAndUpdate(
-                { _id: pid },
-                {
-                    $set: {
-                        price: Number(price),
-                        stock: Number(stock),
-                        status: status === 'available',
-                        ...rest
-                    }
-                }
-            );
+            const updatedProduct = await productsModel.update({pid, price, stock, status, rest})
             return updatedProduct;
         } catch (error) {
             console.log(error);
@@ -120,13 +121,18 @@ class ProductsService{
         }
     }
 
+    async updateOneProd({pid,quantity}) {
+        try{
+            await productsModel.updateOne(pid,quantity);
+        } catch (error) {
+            console.log(error);
+            throw new Error("Unable to get products");
+        }
+    }
+
     async viewsProducts() {
         try {
-            const views = await ProductModel.find({},{
-                path:false,
-                __v:false
-            }).lean()
-
+            const views = await productsModel.viewsProducts()
             return views;
         } catch (error) {
             console.log(error);

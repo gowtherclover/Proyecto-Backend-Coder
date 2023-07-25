@@ -1,15 +1,50 @@
-//@ts-check
-import { Schema, model } from "mongoose";
+import { MongooseUserModel } from "./mongoose/users.mongoose.js";
+class UsersModel{
+    async getAll() {
+        try {
+            let allUsers = await MongooseUserModel.find({}, { __v: false });
+            return allUsers;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Unable to get all users");
+        }
+    }
 
-const userSchema = new Schema({
-    first_name: { type: String, required: true, trim: true, maxlength: 100,},
-    last_name: { type: String, required: true, trim: true, maxlength: 100,},
-    username: {type: String,required: true,unique: true,trim: true,maxlength: 100,},
-    email: { type: String, required: true, unique: true, trim: true, maxlength: 100,},
-    age: { type: String, required: true, trim: true, maxlength: 100,},
-    password: { type: String, required: true, maxlength: 100,},
-    role: { type: String, enum: ['admin', 'user'], default: 'user',},
-    cart_ID: { type: String, trim:true, unique:true, required: true,},
-});
+    async getOne(username){
+        const users = await MongooseUserModel.findOne({username:username},{__v:false});
+        return users
+    }
 
-export const UserModel = model("users", userSchema);
+    async create( {first_name,last_name,username, email,age, password,cart_ID} ) {
+        try {
+            const userCreated = await MongooseUserModel.create({
+                first_name,
+                last_name,
+                username,
+                email,
+                age,
+                password,
+                cart_ID}
+            );
+            return userCreated;
+        } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+        }
+    }
+
+    async update({id, firstName, lastName, email}){
+        const userUpdated = await MongooseUserModel.updateOne(
+            { _id: id },
+            { firstName, lastName, email }
+        );
+        return userUpdated
+    }
+
+    async delete({id}){
+        const userDeleted = await MongooseUserModel.deleteOne({ _id: id });
+        return userDeleted
+    }
+}
+
+export const userModel = new UsersModel()

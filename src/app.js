@@ -19,6 +19,7 @@ import MongoStore from 'connect-mongo';
 import { iniPassport } from './config/passport.config.js';
 import passport from 'passport';
 import { env } from './config/env.js';
+import { authenticate } from './middlewares/main.js';
 
 
 const app = express();
@@ -71,12 +72,6 @@ app.use("/cookie",cookiesRouter)
 app.use("/api/sessions/",sessionsRouter)
 app.use("/",sessionsRouter)
 
-function authenticate(req, res, next) {
-    if (!req.session.user) {
-        return res.render('errorLogin',{msg:'Error authenticate'});
-    }
-    next()
-}
 
 app.get("*", (req, res) => {
     return res.render('errorLogin',{msg:'Error link'});

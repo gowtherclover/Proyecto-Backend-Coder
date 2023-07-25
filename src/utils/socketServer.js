@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import { MessagesModel } from "../DAO/models/messages.model.js";
-import { cartsModel } from "../DAO/models/carts.model.js";
 import { cartService } from "../services/carts.service.js";
 import { prodService } from "../services/products.service.js";
 
@@ -33,7 +32,7 @@ export function connectSocketServer(httpServer ){
     socketServer.on('connection', (socket) => {
         socket.on('viewProd_front_back', async (productId) => {
             let pid = productId.pid
-            await prodService.updateOneProd({pid, quantity: -1});
+            await prodService.updateOneProd({pid, quantity:-1});
             const newStock = await prodService.findOne(pid)
             socketServer.emit('viewProd_back_front', newStock);
         });
@@ -41,7 +40,7 @@ export function connectSocketServer(httpServer ){
     
     socketServer.on('connection', (socket) => {
         socket.on('viewCart_front_back', async (IDs) => {
-            const updateCart = await cartsModel.findOne({ _id: IDs.cid }, { __v: false });
+            const updateCart = await cartService.findOne(IDs.cid);
 
             const existsInCart = !updateCart.products.some((data) => data.pid._id.toString() === IDs.pid);
 
@@ -51,13 +50,15 @@ export function connectSocketServer(httpServer ){
 
     socketServer.on('connection', (socket) => {
         socket.on('increaseCart_front_back', async (productId) => {
-            await prodService.updateOne({ _id: productId.pid }, { $inc: { stock: -1 } });
+            let pid = productId.pid
+            await prodService.updateOneProd({pid, quantity:-1});
         });
     })
 
     socketServer.on('connection', (socket) => {
         socket.on('decreaseCart_front_back', async (IDs) => {
-            await prodService.updateOne({ _id: IDs.pid }, { $inc: { stock: +1 } });
+            let pid = IDs.pid
+            await prodService.updateOneProd({pid, quantity:1});
             await cartService.deleteProd(IDs.cid,IDs.pid)
         });
     })

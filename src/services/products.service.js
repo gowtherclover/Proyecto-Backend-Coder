@@ -123,7 +123,7 @@ class ProductsService{
 
     async updateOneProd({pid,quantity}) {
         try{
-            await productsModel.updateOne(pid,quantity);
+            await productsModel.updateOneProd({pid,quantity});
         } catch (error) {
             console.log(error);
             throw new Error("Unable to get products");

@@ -79,7 +79,6 @@ class ProductsModel{
 
     async updateOneProd({pid,quantity}) {
         try{
-            console.log(quantity);
             await MongooseProductModel.updateOne({ _id: pid }, { $inc: { stock: quantity } });
         } catch (error) {
             console.log(error);

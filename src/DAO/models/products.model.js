@@ -1,8 +1,8 @@
 import { MongooseProductModel } from "./mongoose/products.mongoose.js";
 class ProductsModel{
-    async getAllProducts() {
+    getAllProducts() {
         try{
-            let allProds = await  MongooseProductModel.find({},{path: false, __v: false,});
+            let allProds = MongooseProductModel.find({},{path: false, __v: false,});
             return allProds
         } catch (error) {
             console.log(error);
@@ -12,7 +12,6 @@ class ProductsModel{
 
     async paginate({query,numberPage}) {
         try{
-            console.log(query);
             const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
             return pages
         } catch (error) {

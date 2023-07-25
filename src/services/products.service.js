@@ -5,7 +5,7 @@ import { parse } from 'url';
 class ProductsService{
     async getAllProducts(req, limit,sort,numberPage,category, stock) {
         try{
-            let query = MongooseProductModel.find({},{path: false, __v: false,});
+            /* let query = MongooseProductModel.find({},{path: false, __v: false,});
 
             if (sort) {
                 query = query.sort({ price: sort })
@@ -21,8 +21,8 @@ class ProductsService{
                 query = query.limit(limit)
             } 
             const pages = await MongooseProductModel.paginate(query,{limit:3, page:numberPage || 1})
-
-            /* let query = productsModel.getAllProducts()
+ */
+            let query = productsModel.getAllProducts()
             
             if (sort) {
                 query = query.sort({ price: sort })
@@ -38,7 +38,7 @@ class ProductsService{
                 query = query.limit(limit)
             }
             
-            const pages = await productsModel.paginate(query,numberPage) */
+            const pages = await productsModel.paginate({query,numberPage})
 
 
             const { docs, totalPages, page, hasPrevPage, hasNextPage, prevPage, nextPage } = pages;

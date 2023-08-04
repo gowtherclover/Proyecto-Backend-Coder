@@ -1,11 +1,12 @@
 import { cartsModel } from "../DAO/models/carts.model.js";
-import { userModel } from "../DAO/models/users.model.js";
+//import { UsersDAO } from "../DAO/models/users.model.js";
+import { Users } from "../DAO/factory.js";
 import { createHash } from "../utils/hash.js";
 
 class UserService{
     async getAll() {
         try {
-            let allUsers = await userModel.getAll()
+            let allUsers = await Users.getAll()
             return allUsers;
         } catch (error) {
             console.log(error);
@@ -14,20 +15,20 @@ class UserService{
     }
 
     async getOne(username){
-        const users = await userModel.getOne(username);
+        const users = await Users.getOne(username);
         return users
     }
 
     async create({ first_name,last_name,username, email,age, password }) {
         try {
-            const findUser = await userModel.getOne(username)
+            const findUser = await Users.getOne(username)
 
             if (findUser) {
                 return false;
             } else {
                 const newCart= await cartsModel.createCart();
 
-                const userCreated = await userModel.create({ 
+                const userCreated = await Users.create({ 
                     first_name,
                     last_name,
                     username,
@@ -44,12 +45,12 @@ class UserService{
     }
 
     async update({id, firstName, lastName, email}){
-        const userUpdated = await userModel.update(id, firstName, lastName, email)
+        const userUpdated = await Users.update(id, firstName, lastName, email)
         return userUpdated
     }
 
     async delete({id}){
-        const userDeleted = await userModel.delete(id);
+        const userDeleted = await Users.delete(id);
         return userDeleted
     }
 }

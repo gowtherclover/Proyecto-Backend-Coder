@@ -2,12 +2,14 @@ import fetch from 'node-fetch';
 import passport from "passport";
 import GitHubStrategy from 'passport-github2';
 import local from "passport-local";
-import { userModel } from "../DAO/models/users.model.js";
 import { isValidPassword } from "../utils/hash.js";
-import { env } from './env.js';
+import dotenv from 'dotenv'
 import { userService } from '../services/users.service.js';
 import { MongooseUserModel } from '../DAO/models/mongoose/users.mongoose.js';
 const LocalStrategy = local.Strategy;
+
+dotenv.config()
+const secret = process.env.SECRET_GITHUB
 
 export function iniPassport() {
     passport.use(
@@ -71,7 +73,7 @@ export function iniPassport() {
         new GitHubStrategy(
             {
                 clientID: 'Iv1.d97fc43e7af535bb',
-                clientSecret: env.SECRET_GITHUB,
+                clientSecret: secret,
                 callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
             },
             async (accesToken, _, profile, done) => {

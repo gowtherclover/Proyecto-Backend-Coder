@@ -1,0 +1,13 @@
+[
+    {
+        "_id": "64cbe87efe16c22cb071d08f",
+        "first_name": "Xiaomi",
+        "last_name": "cel",
+        "username": "Xiaomi",
+        "email": "Xiaomi@mail.com",
+        "age": "27",
+        "password": "$2b$10$/ORZqmh79tbEZ08LsVYb4eNBBuubS6FERuRCGF.qVdf37fOPmaOeC",
+        "role": "user",
+        "cart_ID": "64cbe87efe16c22cb071d08d"
+    }
+]

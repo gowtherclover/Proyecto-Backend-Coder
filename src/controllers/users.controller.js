@@ -21,8 +21,8 @@ class UsersController {
 
     create = async (req, res) => {
         try {
-            const { firstName, lastName, email } = req.body;
-            if (!firstName || !lastName || !email) {
+            const {first_name,last_name,username, email,age, password} = req.body;
+            if (!first_name || !last_name || !email) {
                 console.log(
                     "validation error: please complete firstName, lastname and email."
                 );
@@ -32,7 +32,7 @@ class UsersController {
                     payload: {},
                 });
             }
-            const userCreated = await userService.create({ firstName, lastName, email });
+            const userCreated = await userService.create({first_name,last_name,username, email,age, password});
             return res.status(201).json({
                 status: "success",
                 msg: "user created",
@@ -51,8 +51,8 @@ class UsersController {
     update = async (req, res) => {
         try {
             const { id } = req.params;
-            const { firstName, lastName, email } = req.body;
-            if (!firstName || !lastName || !email || !id) {
+            const {first_name,last_name,username, email,age, password} = req.body;
+            if (!first_name || !last_name || !email || !id) {
                 console.log(
                     "validation error: please complete firstName, lastname and email."
                 );
@@ -63,7 +63,7 @@ class UsersController {
                 });
             }
             try {
-                const userUpdated = await userService.update({ id,firstName, lastName, email }
+                const userUpdated = await userService.update({first_name,last_name,username, email,age, password}
                 );
                 if (userUpdated.matchedCount > 0) {
                     return res.status(201).json({

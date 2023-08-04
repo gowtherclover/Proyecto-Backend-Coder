@@ -47,4 +47,4 @@ class UsersModel{
     }
 }
 
-export const userModel = new UsersModel()
+export const UsersMongo = new UsersModel()

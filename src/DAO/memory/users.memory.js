@@ -4,7 +4,6 @@ import path from "path";
 
 class UsersFS{
     constructor() {
-
         this.path = path.join(__dirname, "/data/users.json");
         this.readUsersFromFile()
     }

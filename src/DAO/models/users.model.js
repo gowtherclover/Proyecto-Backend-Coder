@@ -33,10 +33,10 @@ class UsersModel{
         }
     }
 
-    async update({id, firstName, lastName, email}){
+    async update({id, first_Name, last_Name, email}){
         const userUpdated = await MongooseUserModel.updateOne(
             { _id: id },
-            { firstName, lastName, email }
+            { first_Name, last_Name, email }
         );
         return userUpdated
     }

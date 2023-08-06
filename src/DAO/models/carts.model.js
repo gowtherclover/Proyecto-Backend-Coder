@@ -93,4 +93,4 @@ class CartsModel{
     }
 }
 
-export const cartsModel = new CartsModel()
+export const CartsMongo = new CartsModel()

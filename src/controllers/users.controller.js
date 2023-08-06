@@ -19,6 +19,24 @@ class UsersController {
         }
     }
 
+    getOne = async (req, res) => {
+        try {
+            const users = await userService.getOne(req.params.username);
+            return res.status(200).json({
+                status: "success",
+                msg: "listado de un usuario",
+                payload: users,
+            });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).json({
+                status: "error",
+                msg: "something went wrong :(",
+                payload: {},
+            });
+        }
+    }
+
     create = async (req, res) => {
         try {
             const {first_name,last_name,username, email,age, password} = req.body;
@@ -63,7 +81,7 @@ class UsersController {
                 });
             }
             try {
-                const userUpdated = await userService.update({first_name,last_name,username, email,age, password}
+                const userUpdated = await userService.update({id, first_name, last_name, email}
                 );
                 if (userUpdated.matchedCount > 0) {
                     return res.status(201).json({

@@ -1,6 +1,6 @@
-import { cartsModel } from "../DAO/models/carts.model.js";
+//import { cartsModel } from "../DAO/models/carts.model.js";
 //import { UsersDAO } from "../DAO/models/users.model.js";
-import { Users } from "../DAO/factory.js";
+import { Users,Carts } from "../DAO/factory.js";
 import { createHash } from "../utils/hash.js";
 
 class UserService{
@@ -26,7 +26,7 @@ class UserService{
             if (findUser) {
                 return false;
             } else {
-                const newCart= await cartsModel.createCart();
+                const newCart= await Carts.createCart();
 
                 const userCreated = await Users.create({ 
                     first_name,
@@ -44,13 +44,13 @@ class UserService{
         }
     }
 
-    async update({id, firstName, lastName, email}){
-        const userUpdated = await Users.update(id, firstName, lastName, email)
+    async update({id, first_name, last_name, email}){
+        const userUpdated = await Users.update({id, first_name, last_name, email})
         return userUpdated
     }
 
     async delete({id}){
-        const userDeleted = await Users.delete(id);
+        const userDeleted = await Users.delete({id});
         return userDeleted
     }
 }

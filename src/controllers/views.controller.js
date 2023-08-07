@@ -48,6 +48,7 @@ class ViewsController{
     
             if (cartFinder) {
                 cartFinder = cartFinder.products.map((item) => {
+                    console.log(item);
                     total = total + (item.pid.price * item.quantity)
                     return {
                         _id: item.pid._id.toString(),

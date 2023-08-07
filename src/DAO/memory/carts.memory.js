@@ -2,6 +2,7 @@ import fs from "fs";
 import { __dirname } from "../../config.js";
 import path from "path";
 import { faker } from "@faker-js/faker";
+import { ProductsMemory } from "./products.memory.js";
 
 class CartFS{
     constructor() {
@@ -49,33 +50,9 @@ class CartFS{
 
     findProdInCart({ cid, pid }) {
         const cartFinder = this.Carts.find((cart) => cart._id === cid && cart.products.some((product) => product.pid === pid));
-        if (cartFinder) {
-            return cartFinder;
-        } else {
-            throw new Error("Can't find the product in the cart");
-        }
-    }
-    
-    async createProd({ cid, pid }) {
-        try {
-            const cartIndex = this.Carts.findIndex((cart) => cart._id === cid);
-            if (cartIndex !== -1) {
-                const cart = this.Carts[cartIndex];
-                const productToUpdate = cart.products.find((product) => product.pid === pid);
-                if (productToUpdate) {
-                    productToUpdate.quantity += 1;
-                } else {
-                    cart.products.push({ pid, quantity: 1 });
-                }
-            } else {
-                this.Carts.push({ _id: cid, products: [{ pid, quantity: 1 }] });
-            }
-            await this.saveCartsToFile();
-            return this.findOne(cid);
-        } catch (error) {
-            console.error('Error updating cart:', error);
-            throw error;
-        }
+        console.log(cartFinder);
+        return cartFinder;
+            //throw new Error("Can't find the product in the cart");
     }
 
     async createCart() {
@@ -102,7 +79,8 @@ class CartFS{
                 if (productToUpdate) {
                     productToUpdate.quantity += inc;
                 } else {
-                    cart.products.push({ pid, quantity: 1 });
+                    const product = await ProductsMemory.findOne(pid)
+                    cart.products.push({ pid:{...product}, quantity: 1 });
                 }
                 await this.saveCartsToFile();
             } else {
@@ -124,7 +102,8 @@ class CartFS{
                     if (existingProduct) {
                         existingProduct.quantity += 1;
                     } else {
-                        cart.products.push({ pid, quantity: 1 });
+                        const product = await ProductsMemory.findOne(pid)
+                        cart.products.push({ pid:{...product}, quantity: 1 });
                     }
                 } else if (operation === 'pull') {
                     cart.products = cart.products.filter((product) => product.pid !== pid);

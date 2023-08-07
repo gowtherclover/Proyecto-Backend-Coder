@@ -6,10 +6,10 @@ import { faker } from "@faker-js/faker";
 class ProductsFS{
     constructor() {
         this.path = path.join(__dirname, "/data/products.json");
-        this.readUsersFromFile()
+        this.readProductsFromFile()
     }
 
-    async readUsersFromFile() {
+    async readProductsFromFile() {
         try {
             const data = await fs.promises.readFile(this.path, 'utf-8')
 
@@ -24,7 +24,7 @@ class ProductsFS{
         }
     }
 
-    async saveUsersToFile() {
+    async saveProductsToFile() {
         try {
             const data = JSON.stringify(this.Products)
             await fs.promises.writeFile(this.path, data)
@@ -67,7 +67,7 @@ class ProductsFS{
 
     async findOne(pid) {
         try {
-            const productFinder = this.products.find(product => product._id === pid);
+            const productFinder = this.Products.find(product => product._id === pid);
             if (productFinder) {
                 return productFinder;
             } else {
@@ -81,9 +81,9 @@ class ProductsFS{
 
     async delete(pid) {
         try {
-            const productIndex = this.products.findIndex(product => product._id === pid);
+            const productIndex = this.Products.findIndex(product => product._id === pid);
             if (productIndex !== -1) {
-                this.products.splice(productIndex, 1);
+                this.Products.splice(productIndex, 1);
                 await this.saveProductsToFile();
             } else {
                 throw new Error("Product not found");
@@ -97,7 +97,7 @@ class ProductsFS{
     async create(product) {
         try {
             const newProduct = { ...product, _id: faker.database.mongodbObjectId() };
-            this.products.push(newProduct);
+            this.Products.push(newProduct);
             await this.saveProductsToFile();
             return newProduct;
         } catch (error) {
@@ -108,17 +108,17 @@ class ProductsFS{
 
     async update({ pid, price, stock, status, ...rest }) {
         try {
-            const productIndex = this.products.findIndex(product => product._id === pid);
+            const productIndex = this.Products.findIndex(product => product._id === pid);
             if (productIndex !== -1) {
-                this.products[productIndex] = {
-                    ...this.products[productIndex],
+                this.Products[productIndex] = {
+                    ...this.Products[productIndex],
                     price: Number(price),
                     stock: Number(stock),
                     status: status === 'available',
                     ...rest
                 };
                 await this.saveProductsToFile();
-                return this.products[productIndex];
+                return this.Products[productIndex];
             } else {
                 throw new Error("Product not found");
             }
@@ -130,9 +130,9 @@ class ProductsFS{
 
     async updateOneProd({ pid, quantity }) {
         try {
-            const productIndex = this.products.findIndex(product => product._id === pid);
+            const productIndex = this.Products.findIndex(product => product._id === pid);
             if (productIndex !== -1) {
-                this.products[productIndex].stock += quantity;
+                this.Products[productIndex].stock += quantity;
                 await this.saveProductsToFile();
             } else {
                 throw new Error("Product not found");

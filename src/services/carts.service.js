@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { Carts } from "../DAO/factory.js";
 //import { cartsModel } from "../DAO/models/carts.model.js";
 import { prodService } from "./products.service.js";
+import config from "../config/config.js";
 
 class CartsService{
     async getAllCarts() {
@@ -29,11 +30,21 @@ class CartsService{
         try {
             const findProdInCart = await Carts.findProdInCart({cid, pid});
             if (findProdInCart) {
-                const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
-                
-                if (productToUpdate) {
-                    await Carts.updateOneProd({cid,pid,inc:1})
+                if (config.persistence == 'MONGO') {
+                    const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
+                    if (productToUpdate) {
+                        await Carts.updateOneProd({cid,pid,inc:1})
+                    }
+                }else{
+                    const productToUpdate = findProdInCart.products.find(product => product.pid == pid);
+                    if (productToUpdate) {
+                        await Carts.updateOneProd({cid,pid,inc:1})
+                    }
                 }
+                
+                /* if (productToUpdate) {
+                    await Carts.updateOneProd({cid,pid,inc:1})
+                } */
             } else {
                 await Carts.findCartAndUpdate({ cid, pid, operation: 'push' });
             }

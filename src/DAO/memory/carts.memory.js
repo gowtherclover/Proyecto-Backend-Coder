@@ -40,19 +40,34 @@ class CartFS{
 
 
     findOne(cid) {
-        const cartFinder = this.Carts.find((cart) => cart._id === cid);
-        if (cartFinder) {
+        try {
+            const cartFinder = this.Carts.find((cart) => cart._id === cid);
             return cartFinder;
-        } else {
-            throw new Error("Unable to find the cart");
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 
     findProdInCart({ cid, pid }) {
-        const cartFinder = this.Carts.find((cart) => cart._id === cid && cart.products.some((product) => product.pid === pid));
-        console.log(cartFinder);
-        return cartFinder;
-            //throw new Error("Can't find the product in the cart");
+        try {
+            const cartFinder = this.Carts.find((cart) => cart._id === cid);
+            if (cartFinder) {
+                const productInCart = cartFinder.products.find((product) => product.pid._id === pid);
+                if (productInCart) {
+                    return cartFinder;
+                } else {
+                    console.log('Product not found in the cart');
+                    return null;
+                }
+            } else {
+                console.log('Cart not found');
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     async createCart() {
@@ -75,16 +90,16 @@ class CartFS{
             const cartIndex = this.Carts.findIndex((cart) => cart._id === cid);
             if (cartIndex !== -1) {
                 const cart = this.Carts[cartIndex];
-                const productToUpdate = cart.products.find((product) => product.pid === pid);
+                const productToUpdate = cart.products.find((product) => product.pid._id === pid);
                 if (productToUpdate) {
                     productToUpdate.quantity += inc;
                 } else {
                     const product = await ProductsMemory.findOne(pid)
-                    cart.products.push({ pid:{...product}, quantity: 1 });
+                    cart.products.push({ pid:{...product}, quantity: inc });
                 }
                 await this.saveCartsToFile();
             } else {
-                throw new Error("Cart not found");
+                throw new Error("Cart not found for update");
             }
         } catch (error) {
             console.log(error);
@@ -98,7 +113,7 @@ class CartFS{
             if (cartIndex !== -1) {
                 const cart = this.Carts[cartIndex];
                 if (operation === 'push') {
-                    const existingProduct = cart.products.find((product) => product.pid === pid);
+                    const existingProduct = cart.products.find((product) => product.pid._id === pid);
                     if (existingProduct) {
                         existingProduct.quantity += 1;
                     } else {
@@ -106,7 +121,7 @@ class CartFS{
                         cart.products.push({ pid:{...product}, quantity: 1 });
                     }
                 } else if (operation === 'pull') {
-                    cart.products = cart.products.filter((product) => product.pid !== pid);
+                    cart.products = cart.products.filter((product) => product.pid._id !== pid);
                 } else if (operation === 'clean') {
                     cart.products = [];
                 } else {
@@ -114,7 +129,7 @@ class CartFS{
                 }
                 await this.saveCartsToFile();
             } else {
-                throw new Error("Cart not found");
+                throw new Error("Cart not found :C");
             }
         } catch (error) {
             console.log(error);

@@ -36,15 +36,11 @@ class CartsService{
                         await Carts.updateOneProd({cid,pid,inc:1})
                     }
                 }else{
-                    const productToUpdate = findProdInCart.products.find(product => product.pid == pid);
+                    const productToUpdate = findProdInCart.products.find(product => product.pid._id == pid);
                     if (productToUpdate) {
                         await Carts.updateOneProd({cid,pid,inc:1})
                     }
                 }
-                
-                /* if (productToUpdate) {
-                    await Carts.updateOneProd({cid,pid,inc:1})
-                } */
             } else {
                 await Carts.findCartAndUpdate({ cid, pid, operation: 'push' });
             }
@@ -64,14 +60,21 @@ class CartsService{
     async deleteProd({ cid, pid }) {
         try {
             const findProdInCart = await Carts.findProdInCart({cid, pid});
-
             if (findProdInCart) {
-                const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
-
-                if (productToUpdate.quantity > 1) {
-                    await Carts.updateOneProd({cid,pid,inc:-1})
-                }else {
-                    await Carts.findCartAndUpdate({ cid, pid, operation: 'pull' });
+                if (config.persistence == 'MONGO') {
+                    const productToUpdate = findProdInCart.products.find(product => product.pid.equals(new ObjectId(pid)));
+                    if (productToUpdate.quantity > 1) {
+                        await Carts.updateOneProd({cid,pid,inc:-1})
+                    }else {
+                        await Carts.findCartAndUpdate({ cid, pid, operation: 'pull' });
+                    }
+                }else{
+                    const productToUpdate = findProdInCart.products.find(product => product.pid._id == pid);
+                    if (productToUpdate.quantity > 1) {
+                        await Carts.updateOneProd({cid,pid,inc:-1})
+                    }else {
+                        await Carts.findCartAndUpdate({ cid, pid, operation: 'pull' });
+                    }
                 }
             }
             const cartToUpdate = await Carts.findOne(cid);

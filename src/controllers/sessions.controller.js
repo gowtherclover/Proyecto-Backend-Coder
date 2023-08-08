@@ -1,3 +1,4 @@
+import CurrentDTO from "../DAO/DTO/current.dto.js"
 
 class SessionsController{
     get = async (req,res)=>{
@@ -80,7 +81,8 @@ class SessionsController{
     getCurrent = async (req,res)=>{
         try{
             const dataUser = req.session.user
-            const {first_name,last_name,username, email,age,role} = dataUser
+            const currentDTO = new CurrentDTO(dataUser)
+            const {first_name,last_name,username, email,age,role} = currentDTO
     
             return res.render('profile',{first_name,last_name,username, email,age,role})
         }

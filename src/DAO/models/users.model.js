@@ -45,6 +45,15 @@ class UsersModel{
         const userDeleted = await MongooseUserModel.deleteOne({ _id: id });
         return userDeleted
     }
+
+    async updateTicketUser({tid,email}){
+
+        await MongooseUserModel.findOneAndUpdate(
+            { email:email },
+            { $push: { tickets: tid } }
+        )
+
+    }
 }
 
 export const UsersMongo = new UsersModel()

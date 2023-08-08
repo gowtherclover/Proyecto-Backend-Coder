@@ -10,6 +10,12 @@ const userSchema = new Schema({
     password: { type: String, required: true, maxlength: 100,},
     role: { type: String, enum: ['admin', 'user'], default: 'user',},
     cart_ID: { type: String, trim:true, unique:true, required: true,},
+    tickets: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Tickets',
+        },
+    ],
 });
 
 export const MongooseUserModel = model("users", userSchema);

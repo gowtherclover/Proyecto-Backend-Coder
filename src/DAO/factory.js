@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 export let Users;
 export let Carts;
 export let Products;
+export let Tickets;
 switch (config.persistence) {
     case 'MONGO':
         console.log('Mongo connect');
@@ -15,6 +16,8 @@ switch (config.persistence) {
         Carts = CartsMongo;
         const { ProductsMongo } = await import('./models/products.model.js');
         Products = ProductsMongo;
+        const { TicketsMongo } = await import('./models/tickets.model.js');
+        Tickets = TicketsMongo;
 
         break;
     case 'MEMORY':

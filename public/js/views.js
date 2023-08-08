@@ -27,7 +27,7 @@ if (emptyCart) {
 
 if (buy) {
     buy.addEventListener('click', () => {
-        deleteCart();
+        createTicket();
     });
 }
 
@@ -109,6 +109,23 @@ async function deleteCart(){
 
     } catch (error) {
         console.error('Error deleting cart:', error);
+    }
+}
+
+async function createTicket(){
+    try {
+        const response = await fetch(`/api/carts/${cid}/purchase`, {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error('Error creating ticket');
+        }
+
+        refreshCart(cid)
+
+    } catch (error) {
+        console.error('Error creating ticket:', error);
     }
 }
 

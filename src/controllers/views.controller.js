@@ -27,6 +27,7 @@ class ViewsController{
                     stock:item.stock,
                     category:item.category,
                     status:item.status,
+                    role: role === "admin" ? role : null
                 };
             });
 

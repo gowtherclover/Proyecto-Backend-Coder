@@ -37,9 +37,15 @@
                             <p data-product-id="{{this._id}}" class="stockQuantity text-sm font-medium text-gray-900 pr-3 mt-auto">stock: {{this.stock}}</p>
                         </div>
                     </div>
-                    <button value="{{this._id}}" class="addToCart bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded flex-shrink-0 mt-2">
-                        Agregar al carrito
-                    </button>
+                    {{#if this.role}}
+                        <button class="bg-red-300 hover:bg-red-400 text-white font-bold py-2 px-4 rounded flex-shrink-0 mt-2">
+                            Admin no compra
+                        </button>
+                    {{else}}
+                        <button value="{{this._id}}" class="addToCart bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded flex-shrink-0 mt-2">
+                            Agregar al carrito
+                        </button>
+                    {{/if}}
                 </div>
             {{/each}}
         </div>

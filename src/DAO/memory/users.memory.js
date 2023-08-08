@@ -100,6 +100,17 @@ class UsersFS{
             throw error;
         }
     }
+
+    async updateTicketUser({ tid, email }) {
+        console.log('tid: '+tid);
+        console.log('mail: '+email);
+        const userIndex = this.Users.findIndex(user => user.email === email);
+        if (userIndex !== -1) {
+            this.Users[userIndex].tickets.push({ tid });
+        } else {
+            throw new Error("User not found");
+        }
+    }
 }
 
 export const UsersMemory = new UsersFS()

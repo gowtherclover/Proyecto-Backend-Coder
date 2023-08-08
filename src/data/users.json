@@ -8,7 +8,8 @@
     "age": "27",
     "password": "$2b$10$SU3oODG/jKv2suGjzVnZauSh1FowOicGLLfXjlqnq5t44vtetZbO6",
     "cart_ID": "7ecd6a3c61d7a82ab32b890a",
-    "role": "user"
+    "role": "user",
+    "tickets":[]
   },
   {
     "_id": "48fe74c3d401a4fa243fad5b",
@@ -19,7 +20,8 @@
     "age": "27",
     "password": "$2b$10$Onx4uuImxZXMOtowiIoOE.VLTJmZoKIhE6Cjvqpb/J6/z30ehxzi.",
     "cart_ID": "f6e2ed8dd2d4eb8cd3eecf54",
-    "role": "user"
+    "role": "admin",
+    "tickets":[]
   },
   {
     "_id": "988ffcc2c4b5ce9c16281ecd",
@@ -30,6 +32,7 @@
     "age": "noage",
     "password": "$2b$10$35hnK3ACBRG8XFKPFD8jDeSTvx08KuZeEQoO7k3a7bzQR45d4cBHa",
     "cart_ID": "997deeaf648fcbca3c76bf75",
-    "role": "user"
+    "role": "user",
+    "tickets":[]
   }
 ]

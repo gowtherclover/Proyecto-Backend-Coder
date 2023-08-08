@@ -30,19 +30,6 @@ class TicketsModel{
             throw error;
         }
     }
-
-    async update({id, first_Name, last_Name, email}){
-        const userUpdated = await MongooseTicketModel.updateOne(
-            { _id: id },
-            { first_Name, last_Name, email }
-        );
-        return userUpdated
-    }
-
-    async delete({id}){
-        const userDeleted = await MongooseTicketModel.deleteOne({ _id: id });
-        return userDeleted
-    }
 }
 
 export const TicketsMongo = new TicketsModel()

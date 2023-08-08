@@ -19,7 +19,7 @@ import MongoStore from 'connect-mongo';
 import { iniPassport } from './config/passport.config.js';
 import passport from 'passport';
 import config from './config/config.js';
-import { authenticate } from './middlewares/main.js';
+import { authenticate, isAdmin, isUser } from './middlewares/main.js';
 
 const app = express();
 
@@ -63,9 +63,9 @@ app.set("view engine", "handlebars");
 app.use("/api/products",authenticate, productsRouter);
 app.use("/api/carts",authenticate, cartsRouter);
 app.use("/api/users"/* ,authenticate */, usersRouter);
-app.use("/chat", ChatRouter);
+app.use("/chat",isUser, ChatRouter);
 app.use("/home",homeRouter)
-app.use("/realtimeproducts",authenticate,realTimeProductsRouter)
+app.use("/realtimeproducts",isAdmin,realTimeProductsRouter)
 app.use("/views",viewsRouter)
 app.use("/cookie",cookiesRouter)
 app.use("/api/sessions/",sessionsRouter)

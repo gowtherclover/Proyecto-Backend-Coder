@@ -29,6 +29,9 @@ switch (config.persistence) {
         Carts = CartsMemory
         const { ProductsMemory } = await import('./memory/products.memory.js');
         Products = ProductsMemory
+        
+        const { TicketsMemory } = await import('./memory/tickets.memory.js');
+        Tickets = TicketsMemory
 
         break;
     default:

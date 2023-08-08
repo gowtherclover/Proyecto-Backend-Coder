@@ -1,6 +1,7 @@
 import express from "express"
 import { cartController } from "../controllers/carts.controller.js"
 import { ticketsController } from "../controllers/tickets.controller.js";
+import { isAdmin } from "../middlewares/main.js";
 export const cartsRouter = express.Router()
 
 cartsRouter.get('/', cartController.getAllCarts)
@@ -17,4 +18,4 @@ cartsRouter.delete('/:cid', cartController.deleteCart)
 
 cartsRouter.post('/:cid/purchase', ticketsController.create)
 
-cartsRouter.get('/tickets', ticketsController.getAll)
+cartsRouter.get('/purchase', isAdmin,ticketsController.getAll)

@@ -10,8 +10,8 @@ class TicketsModel{
         }
     }
 
-    async getOne(username){
-        const Tickets = await MongooseTicketModel.findOne({username:username},{__v:false});
+    async getOne({tid}){
+        const Tickets = await MongooseTicketModel.findOne({_id:tid},{__v:false});
         return Tickets
     }
 

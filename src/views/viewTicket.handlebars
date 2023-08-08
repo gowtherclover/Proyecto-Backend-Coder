@@ -1,0 +1,10 @@
+<h1>Orden de Compra</h1>
+<h4>Codigo de compra: {{this.tickets.code}}</h4>
+<p>Fecha y hora: {{this.tickets.purchase_datetime}}</p>
+<p>Comprador: {{this.tickets.purchaser}}</p>
+<h4>Productos comprados: </h4>
+{{#each products}}
+    <h5>{{this.pid}}</h5>
+{{/each}}
+
+<p>Total: {{this.tickets.totalPrice}}</p>

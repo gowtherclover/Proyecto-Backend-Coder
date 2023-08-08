@@ -21,12 +21,10 @@ class TicketsController {
 
     getOne = async (req, res) => {
         try {
-            const tickets = await ticketService.getOne(req.params.ticketname);
-            return res.status(200).json({
-                status: "success",
-                msg: "listado de un usuario",
-                payload: tickets,
-            });
+            const tid = req.params.tid
+            const tickets = await ticketService.getOne({tid});
+            const products =tickets.products
+            return res.status(200).render('viewTicket',{tickets,products})
         } catch (e) {
             console.log(e);
             return res.status(500).json({
@@ -42,8 +40,12 @@ class TicketsController {
             const cid = req.params.cid
 
             const email = req.session.user.email
-            await ticketService.create({cid,email});
-            return res.redirect('/views/products');
+            const ticketCreated = await ticketService.create({cid,email});
+            if(ticketCreated){
+                return res.status(200).redirect(`/views/purchase/${ticketCreated._id.toString()}`);
+            }else{
+                return res.status(404).json({msg:'cart empty'})
+            }
         } catch (e) {
             console.log(e);
             return res.status(500).json({

@@ -1,3 +1,5 @@
+import CustomError from "../services/errors/custom-error.js";
+import EErros from "../services/errors/enums.js";
 import { userService } from "../services/users.service.js";
 
 class UsersController {
@@ -41,21 +43,21 @@ class UsersController {
         try {
             const {first_name,last_name,username, email,age, password} = req.body;
             if (!first_name || !last_name || !email) {
-                console.log(
-                    "validation error: please complete firstName, lastname and email."
-                );
-                return res.status(400).json({
-                    status: "error",
-                    msg: "please complete firstName, lastname and email.",
-                    payload: {},
+
+                CustomError.createError({
+                    name: "User creation error",
+                    cause: `please complete first_name = ${first_name}, last_name = ${last_name} and email = ${email}.`,
+                    message: "Error trying to create user",
+                    code: EErros.INVALID_TYPES_ERROR,
+                });
+            }else{
+                const userCreated = await userService.create({first_name,last_name,username, email,age, password});
+                return res.status(201).json({
+                    status: "success",
+                    msg: "user created",
+                    payload: userCreated,
                 });
             }
-            const userCreated = await userService.create({first_name,last_name,username, email,age, password});
-            return res.status(201).json({
-                status: "success",
-                msg: "user created",
-                payload: userCreated,
-            });
         } catch (e) {
             console.log(e);
             return res.status(500).json({
